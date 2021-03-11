@@ -1,0 +1,27 @@
+.layout {
+  display: grid;
+  grid-template-areas:
+    'headerDiv'
+    'mainDiv';
+  grid-template-rows: 3.5rem 100%;
+}
+
+.content {
+  grid-area: mainDiv;
+  overflow: auto;
+  height: calc(100vh - 3.5rem);
+}
+
+.header {
+  grid-area: headerDiv;
+}
+
+@media (min-width: 37.5em) {
+  .layout {
+    grid-template-rows: 4rem 100%;
+  }
+
+  .content {
+    height: calc(100vh - 4rem);
+  }
+}

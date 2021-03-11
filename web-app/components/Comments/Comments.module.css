@@ -1,0 +1,29 @@
+.title {
+  display: flex;
+  width: -moz-fit-content;
+}
+
+.commentIcon {
+  display: flex;
+  align-items: center;
+}
+
+.titleText {
+  margin-left: 8px !important;
+}
+
+.btnAdd {
+  padding: 4px !important;
+  margin-left: 0px !important;
+  align-self: center;
+}
+
+.addComment {
+  display: flex;
+  align-items: center;
+}
+
+.newCommentCard {
+  padding: 8px;
+  margin-top: 8px;
+}

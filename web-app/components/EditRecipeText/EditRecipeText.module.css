@@ -1,0 +1,34 @@
+.addMode {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-areas:
+    'title steps'
+    'ingredients steps'
+    'homeIngredients steps';
+  gap: 12px;
+}
+
+.editMode {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-areas:
+    'ingredients steps'
+    'homeIngredients steps';
+  gap: 12px;
+}
+
+.title {
+  grid-area: title;
+}
+
+.ingredients {
+  grid-area: ingredients;
+}
+
+.homeIngredients {
+  grid-area: homeIngredients;
+}
+
+.steps {
+  grid-area: steps;
+}
