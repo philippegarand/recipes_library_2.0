@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { MuiThemeProvider, ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core';
 import { Provider } from 'react-redux';
 import '../styles/globals.css';
 import { useStore } from '../Utils/Store';
 import { Layout, SnackBar } from '../components';
+import theme from '../Utils/theme';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState);
@@ -18,12 +19,12 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
-      {/* <MuiThemeProvider> */}
-      <Layout>
-        <Component {...pageProps} />
-        <SnackBar />
-      </Layout>
-      {/* </MuiThemeProvider> */}
+      <ThemeProvider theme={theme}>
+        <Layout>
+          <Component {...pageProps} />
+          <SnackBar />
+        </Layout>
+      </ThemeProvider>
     </Provider>
   );
 }

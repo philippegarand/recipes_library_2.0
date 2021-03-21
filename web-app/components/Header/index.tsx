@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-//import { useHistory, useLocation } from 'react-router-dom';
 import {
   AppBar,
   fade,
@@ -18,6 +17,8 @@ import SearchBox from '../SearchBox';
 import { ACTION_ENUM, IStoreState } from '../../Utils/Store';
 import { useDispatch, useSelector } from 'react-redux';
 import AlertDialog from '../AlertDialog';
+import { iconsList } from '../Icon';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,12 +28,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
-    color: '#FFFFFF',
-  },
-  titleMobile: {
-    flexGrow: 1,
     display: 'none',
+    flexGrow: 1,
     color: '#FFFFFF',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
@@ -81,7 +78,11 @@ const AppBarNameMap = new Map([
   [ROUTES.NOT_FOUND, 'Êtes-vous perdu ?'],
 ]);
 
-const options = [
+const options: {
+  icon: keyof typeof iconsList;
+  text: string;
+  filterBy: FILTER_BY_ENUM;
+}[] = [
   {
     icon: 'ClearIcon',
     text: 'Aucun',
@@ -116,9 +117,8 @@ const options = [
 
 export default function Header() {
   const classes = useStyles();
-  //const history = useHistory();
-  //const location = useLocation();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { editMode } = useSelector((state: IStoreState) => state);
 
@@ -199,15 +199,10 @@ export default function Header() {
             edge="start"
             className={classes.libraryButton}
             icon="MenuBookIcon"
-            onClick={() => history.push(ROUTES.HOME)}
+            onClick={() => router.push(ROUTES.HOME)}
           />
           <Typography
-            className={
-              currentPath === ROUTES.LIBRARY &&
-              window.innerWidth <= 600
-                ? classes.titleMobile
-                : classes.title
-            }
+            className={classes.title}
             color="inherit"
             variant="h6"
             noWrap
@@ -219,7 +214,7 @@ export default function Header() {
               <div className={classes.search}>
                 <SearchBox />
               </div>
-              <div style={{ marginLeft: '6px' }}>
+              <div style={{ marginLeft: '0.375rem' }}>
                 <IconButton
                   edge="end"
                   aria-controls={menuId}
@@ -249,7 +244,9 @@ export default function Header() {
           )}
         </Toolbar>
       </AppBar>
-      {currentPath === ROUTES.LIBRARY ? renderMenu : <></>}
+
+      {currentPath === ROUTES.LIBRARY && renderMenu}
+
       <AlertDialog
         title="Comment importer une recette?"
         content="

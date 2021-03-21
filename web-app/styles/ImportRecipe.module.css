@@ -1,0 +1,117 @@
+.mainDiv {
+  height: 100%;
+  display: flex;
+}
+
+.importGrid {
+  display: grid;
+  grid-template-areas:
+    'left middle right'
+    'left bottom right';
+  grid-template-columns: 1.5fr 7fr 1.5fr;
+  grid-template-rows: 3fr 1fr;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.leftScreen {
+  grid-area: left;
+}
+
+.centerScreen {
+  grid-area: middle;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightScreen {
+  grid-area: right;
+  display: flex;
+}
+
+.bottomScreen {
+  grid-area: bottom;
+}
+
+.image {
+  width: 100%;
+}
+
+.uploadButtonsContainer {
+  grid-area: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.uploadButton {
+  top: 4rem;
+}
+
+.listText {
+  text-align: right;
+}
+
+.listIcon {
+  margin-left: 1rem;
+  min-width: 0px !important;
+}
+
+.clickable:hover {
+  cursor: pointer;
+}
+
+.divider {
+  width: 90%;
+  margin: auto !important;
+}
+
+.tags {
+  width: 91%;
+  height: min-content;
+}
+
+.paddingTop {
+  margin-top: 5rem;
+}
+
+.selectionPreview {
+  position: absolute;
+  bottom: 0.625rem;
+  right: 0.625rem;
+  display: grid;
+  grid-template-areas: 'buttons preview';
+}
+
+.selectionButtons {
+  grid-area: buttons;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.selectionPreviewCard {
+  grid-area: preview;
+  padding: 0.25rem;
+  background-color: black !important;
+  display: flex;
+  align-items: center;
+}
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ocrProgress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  margin-bottom: -0.25rem;
+}

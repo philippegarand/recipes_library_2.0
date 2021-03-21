@@ -1,0 +1,34 @@
+version: "3.4"
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    ports:
+      - 1337:80
+    environment:
+      IS_DOCKER: "true"
+      DB_ADDR: database
+      DB_PASS: docker
+      DB_USER: root
+      DB_NAME: RECIPES_DB
+      # TODO: change this folder path
+      PICTURE_SOURCE: uploads
+    volumes:
+      # TODO: edit volume to fit with vm linux
+      - C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/receiveImageTest:/app/uploads
+      #- C:\Users\Phil\Documents\GitHub\recipes_library_2.0\testPictures:/app/testPictures
+
+  database:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: RECIPES_DB
+    ports:
+      - 3306:3306
+    volumes:
+      - ../DB/data:/var/lib/mysql

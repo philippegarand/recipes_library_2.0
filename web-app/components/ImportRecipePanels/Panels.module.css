@@ -1,0 +1,59 @@
+/*LEFT PANEL*/
+.listText {
+  text-align: right;
+}
+
+.listTextMargin {
+  text-align: right;
+  margin-right: 1rem;
+}
+
+.listIcon {
+  margin-left: 1rem;
+  min-width: 0 !important;
+}
+
+.clickable:hover {
+  cursor: pointer;
+}
+
+.divider {
+  width: 90%;
+  margin: auto !important;
+}
+
+.rightSide {
+  margin-left: auto;
+}
+
+/*RIGHT PANEL*/
+.tags {
+  width: 91%;
+  height: min-content;
+}
+
+/*BOTTOM PANEL*/
+.stepper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ocrProgress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: -4px;
+}
+
+.loadingSpinner {
+  margin-left: 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  margin-top: 0.75rem;
+  gap: 0.5rem;
+}

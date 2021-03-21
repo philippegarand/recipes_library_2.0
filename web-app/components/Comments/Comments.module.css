@@ -6,15 +6,16 @@
 .commentIcon {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .titleText {
-  margin-left: 8px !important;
+  padding-top: 0.25rem;
 }
 
 .btnAdd {
-  padding: 4px !important;
-  margin-left: 0px !important;
+  padding: 0.25rem !important;
+  margin-left: 0 !important;
   align-self: center;
 }
 
@@ -24,6 +25,18 @@
 }
 
 .newCommentCard {
-  padding: 8px;
-  margin-top: 8px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.divider {
+  margin: 0.25rem 0 0.25rem 0;
+}
+
+.listItemAvatar {
+  max-width: 1.25rem;
+}
+
+.avatar {
+  background-color: #3cc47c;
 }
