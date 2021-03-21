@@ -3,14 +3,16 @@ using System;
 using EFDataAccessLibrary.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EFDataAccessLibrary.Migrations
 {
     [DbContext(typeof(RecipesContext))]
-    partial class RecipesContextModelSnapshot : ModelSnapshot
+    [Migration("20210321203534_unique-tag-text")]
+    partial class uniquetagtext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

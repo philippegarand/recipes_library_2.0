@@ -6,7 +6,7 @@ import {
 
 export interface ITag {
   id?: number;
-  text: string;
+  text?: string;
 }
 
 export interface IStep {

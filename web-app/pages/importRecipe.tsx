@@ -8,12 +8,7 @@ import React, {
 import { Card } from '@material-ui/core';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
-import {
-  EditRecipeText,
-  Icon,
-  Button,
-  IconButton,
-} from '../components';
+import { EditRecipeText, Button, IconButton } from '../components';
 import AlertDialog from '../components/AlertDialog';
 import {
   RECIPE_TYPE_ENUM,
@@ -25,14 +20,7 @@ import {
 import { ACTION_ENUM } from '../Utils/Store';
 import { apiResponseIsError } from '../Utils/validationFunctions';
 import { useRouter } from 'next/router';
-import {
-  IComment,
-  IHomeIngredient,
-  IIngredient,
-  IRecipe,
-  IStep,
-  ITag,
-} from '../Utils/types';
+import { IRecipe, ITag } from '../Utils/types';
 import { AddRecipe } from '../api/calls';
 import Head from 'next/head';
 
@@ -74,11 +62,8 @@ interface formikAfterOcr {
 
 interface formikValues {
   title: string;
-  //ingredients: IIngredient[];
   ingredients: string[];
-  //homeIngredients: IHomeIngredient[];
   homeIngredients: string[];
-  //steps: IStep[];
   steps: string[];
   favorite: boolean;
   rating: number;
@@ -86,7 +71,6 @@ interface formikValues {
   forHowMany: FOR_HOW_MANY_ENUM;
   comments: string;
   tags: ITag[];
-  //tags: String[];
 }
 
 export default function importRecipe() {
@@ -165,8 +149,8 @@ export default function importRecipe() {
       } = values;
 
       let pictureBase64;
-      await blobToBase64(cropBlobs[4]).then((res) => {
-        pictureBase64 = res;
+      await blobToBase64(cropBlobs[4]).then((res: string) => {
+        pictureBase64 = res.substring(22); //removes "data:image/png;base64,"
       });
 
       const recipe: IRecipe = {
@@ -182,18 +166,14 @@ export default function importRecipe() {
           number: index + 1,
           text: i,
         })),
-        //ingredients,
         homeIngredients: homeIngredients.map((i, index) => ({
           number: index + 1,
           text: i,
         })),
-        //homeIngredients,
         steps: steps.map((s, index) => ({
           number: index + 1,
           text: s,
         })),
-        //steps,
-        //comments: [{ Content: comments }],
         comments: [{ text: comments }],
       };
 

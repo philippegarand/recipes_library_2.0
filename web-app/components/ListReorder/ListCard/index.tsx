@@ -34,8 +34,10 @@ export default function ListCard(props: IProps) {
     onRemove();
   };
 
-  const handleTextChange = (e: React.FormEvent<HTMLInputElement>) => {
-    onChange(e.currentTarget.value);
+  const handleTextChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    onChange(event.currentTarget.value);
   };
 
   return (
@@ -63,6 +65,8 @@ export default function ListCard(props: IProps) {
         onChange={handleTextChange}
         InputProps={{
           style: { fontSize: 16 },
+          spellCheck: true,
+          lang: 'fr',
         }}
         error={error}
         helperText={helperText}

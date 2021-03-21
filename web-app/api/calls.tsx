@@ -21,7 +21,8 @@ export const GetRecipe = async (id: number): Promise<IRecipe> => {
 export const AddRecipe = async (
   recipe: IRecipe,
 ): Promise<AxiosResponse> => {
-  return await api.post('Recipes', { recipe });
+  console.log(recipe);
+  return await api.post('Recipes', recipe);
 };
 
 export const EditRecipe = async (

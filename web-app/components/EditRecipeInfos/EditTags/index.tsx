@@ -47,13 +47,13 @@ export default function EditTags(props: IProps) {
   }, []);
 
   const handleTagsChanged = async (e: any, values: IAddableTag[]) => {
+    // created new tag
     if (values[values.length - 1]?.id === -1) {
       const newTag =
         values[values.length - 1].text.charAt(0).toUpperCase() +
         values[values.length - 1].text.slice(1);
 
       const res = await AddTag(newTag);
-      console.log(res);
 
       if (apiResponseIsError(res.status)) {
         dispatch({
@@ -66,19 +66,17 @@ export default function EditTags(props: IProps) {
       }
 
       // successfully created
+      await getPossibleTags();
       const updatedList = values.filter((v) => v.id !== -1);
       formik.setFieldValue('tags', [
         ...updatedList,
-        { id: res.data.tagId, text: res.data.content },
+        { id: res.data.id, text: res.data.text },
       ]);
-      getPossibleTags();
       return;
     }
 
     formik.setFieldValue('tags', values);
   };
-
-  //console.log(tagOptions);
 
   return (
     <Autocomplete

@@ -12,7 +12,6 @@
 .card {
   padding: 0 8px 8px 8px;
   margin-bottom: 8px;
-  top: auto !important;
   left: auto !important;
 }
 .card:last-child {

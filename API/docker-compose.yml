@@ -17,11 +17,10 @@ services:
       DB_USER: root
       DB_NAME: RECIPES_DB
       # TODO: change this folder path
-      PICTURE_SOURCE: uploads
+      PICTURES_SOURCE: uploads
     volumes:
       # TODO: edit volume to fit with vm linux
-      - C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/receiveImageTest:/app/uploads
-      #- C:\Users\Phil\Documents\GitHub\recipes_library_2.0\testPictures:/app/testPictures
+      - C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/recipesPictures:/app/uploads
 
   database:
     image: mysql:8

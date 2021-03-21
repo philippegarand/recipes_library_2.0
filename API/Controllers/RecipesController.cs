@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EFDataAccessLibrary.DataAccess;
 using Models;
+using API.Helpers;
 
 namespace API.Controllers
 {
@@ -34,8 +35,7 @@ namespace API.Controllers
                 if (recipe == null)
                     return NotFound();
 
-                recipe.PictureData = Convert.ToBase64String(await System.IO.File.ReadAllBytesAsync(
-                        $"{Environment.GetEnvironmentVariable("PICTURE_SOURCE")}/recipe_{id}.png"));
+                recipe.PictureData = await PictureHelper.GetDataFromPicture(recipe.ID);
 
                 return Ok(recipe);
             }
@@ -77,14 +77,18 @@ namespace API.Controllers
 
         // POST: api/Recipes
         [HttpPost]
-        public async Task<ActionResult<Recipe>> PostRecipe(Recipe recipe)
+        public async Task<ActionResult<Recipe>> PostRecipe([FromBody] Recipe recipe)
         {
             try
             {
+                recipe.Tags = recipe.Tags.Select(t => _context.Tags.First(x => x.ID == t.ID)).ToList();
+
                 _context.Recipes.Add(recipe);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetRecipe", new { id = recipe.ID }, recipe);
+                await PictureHelper.SavePictureFromData(recipe.ID, recipe.PictureData);
+
+                return Created("Recipe", recipe.ID);
             }
             catch (Exception e)
             {
