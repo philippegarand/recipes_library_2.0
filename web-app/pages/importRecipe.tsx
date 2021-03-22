@@ -174,7 +174,7 @@ export default function importRecipe() {
           number: index + 1,
           text: s,
         })),
-        comments: [{ text: comments }],
+        comments: comments ? [{ text: comments }] : [],
       };
 
       const res = await AddRecipe(recipe);

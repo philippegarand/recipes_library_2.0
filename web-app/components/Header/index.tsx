@@ -169,13 +169,14 @@ export default function Header() {
     </Menu>
   );
 
-  // useEffect(() => {
-  //   setCurrentPath(
-  //     location.pathname.startsWith('/recipe/')
-  //       ? ROUTES.RECIPE
-  //       : location.pathname,
-  //   );
-  // }, [location.pathname]);
+  useEffect(() => {
+    setCurrentPath(
+      // @ts-ignore
+      router.pathname.startsWith('/recipe/')
+        ? ROUTES.RECIPE
+        : router.pathname,
+    );
+  }, [router.pathname]);
 
   const handleImportHelpOpen = () => {
     setOpenAlert(true);

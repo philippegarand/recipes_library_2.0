@@ -48,3 +48,28 @@ export interface IRecipe {
   comments: IComment[];
   tags: ITag[];
 }
+
+export interface IRecipesQuery {
+  perPage: number;
+  page: number;
+  tagsIds: number[];
+  nameLike: string;
+  //filterBy: string;
+}
+
+export interface IRecipeThumnail {
+  id: number;
+  title: string;
+  timeToMake: RECIPE_LENGHT_ENUM;
+  rating: number;
+  pictureData: string;
+  favorite: boolean;
+  type: RECIPE_TYPE_ENUM;
+  tags: ITag[];
+}
+
+export interface IQueryRes {
+  page: number;
+  totalPages: number;
+  thumbnails: IRecipeThumnail[];
+}

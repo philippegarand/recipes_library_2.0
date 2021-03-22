@@ -13,9 +13,9 @@ namespace API.Helpers
             await System.IO.File.WriteAllBytesAsync(path, Convert.FromBase64String(data));
         }
 
-        public static async Task<string> GetDataFromPicture(int recipeId)
+        public static string GetDataFromPicture(int recipeId)
         {
-            var data = await System.IO.File.ReadAllBytesAsync($"{Environment.GetEnvironmentVariable("PICTURES_SOURCE")}/recipe_{recipeId}.jpg");
+            var data = System.IO.File.ReadAllBytes($"{Environment.GetEnvironmentVariable("PICTURES_SOURCE")}/recipe_{recipeId}.jpg");
             return Convert.ToBase64String(data);
         }
     }

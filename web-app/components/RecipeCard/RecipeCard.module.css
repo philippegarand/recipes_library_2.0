@@ -6,14 +6,18 @@
   grid-template-rows: min-content 20%;
   grid-template-columns: 100%;
 }
+.cardOld:hover {
+  cursor: pointer;
+  box-shadow: 0 0 0.5rem 0 #3cc47c;
+}
 
 .cardNew {
   display: flex;
   flex-direction: column;
 }
-
-.card:hover {
+.cardNew:hover {
   cursor: pointer;
+  box-shadow: 0 0 0.5rem 0 #3cc47c;
 }
 
 .divIconImgOld {
@@ -28,7 +32,7 @@
 }
 
 .icons {
-  z-index: 1;
+  z-index: 1000;
   display: flex;
   position: absolute;
   width: 100%;
@@ -61,17 +65,24 @@
 }
 
 .title {
-  padding: 2px 8px 0 8px;
+  padding: 0.125rem 0.5rem 0 0.5rem;
   margin-top: auto !important;
 }
 
-.divider {
-  margin-top: auto;
+body .divider {
+  /*margin-top: auto*/
+  margin: 0.125rem auto 0.5rem auto;
+  width: 90%;
 }
 
 .tags {
-  padding: 0px 8px 8px 8px;
+  padding: 0 0.5rem 0.5rem 0.5rem;
   display: flex;
-  justify-content: space-evenly;
+  gap: 0.5rem;
   align-items: center;
+  justify-content: center;
+}
+
+body .chip {
+  color: white;
 }

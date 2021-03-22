@@ -1,6 +1,7 @@
 import { FILTER_BY_ENUM, SEVERITY_ENUM } from './enums';
 import { useMemo } from 'react';
 import { createStore, Store } from 'redux';
+import { ITag } from './types';
 
 export enum ACTION_ENUM {
   EDIT_MODE = 'edit mode',
@@ -25,7 +26,7 @@ export interface IStoreState {
     snackbarSeverity?: SEVERITY_TYPE;
     snackbarDuration?: number;
   };
-  selectedTags: [];
+  selectedTags: ITag[];
   filterBy: FILTER_BY_ENUM;
   editMode: boolean;
 }

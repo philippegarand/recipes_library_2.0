@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, Typography, Chip, Divider } from '@material-ui/core';
 import { Icon } from '..';
 import Rating from '@material-ui/lab/Rating';
 import styles from './RecipeCard.module.css';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import {
-  RECIPE_LENGHT_ENUM,
-  RECIPE_TYPE_ENUM,
-  ROUTES,
-} from '../../Utils/enums';
-import { IRecipe } from '../../Utils/types';
+import { RECIPE_TYPE_ENUM, ROUTES } from '../../Utils/enums';
+import { IRecipeThumnail } from '../../Utils/types';
 import { useRouter } from 'next/router';
 
 const clockColorMap = new Map([
@@ -19,7 +15,7 @@ const clockColorMap = new Map([
 ]);
 
 interface IProps {
-  recipe: IRecipe;
+  recipe: IRecipeThumnail;
 }
 
 export default function RecipeCard(props: IProps) {
@@ -31,24 +27,13 @@ export default function RecipeCard(props: IProps) {
     favorite,
     tags,
     type,
+    pictureData,
   } = props.recipe;
 
   const router = useRouter();
 
   const vege = tags.some((t) => t.id === 7);
   const spicy = tags.some((t) => t.id === 9);
-
-  const [imgData, setImgData] = useState('');
-
-  useEffect(() => {
-    // const getImage = async () => {
-    //   const picture = await api(
-    //     formatRoute(`/api/DB/img/${id}`, null),
-    //   );
-    //   setImgData(picture.data);
-    // };
-    // getImage();
-  }, [id]);
 
   return (
     <Card
@@ -92,7 +77,7 @@ export default function RecipeCard(props: IProps) {
               ? styles.imgOld
               : styles.imgNew
           }
-          src={`data:image/PNG;base64,${imgData}`}
+          src={`data:image/jpg;base64,${pictureData}`}
           alt="Recipe Img"
         />
       </div>
@@ -100,30 +85,19 @@ export default function RecipeCard(props: IProps) {
         <Typography className={styles.title} noWrap variant="body2">
           {title}
         </Typography>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Divider
-            className={styles.divider}
-            style={{
-              width: '90%',
-              marginBottom: '8px',
-              marginTop: '2px',
-            }}
-          />
-        </div>
+        <Divider className={styles.divider} />
         <div className={styles.tags}>
-          {tags.map((tag, index) =>
-            tag.id !== 7 && tag.id !== 9 ? (
-              <Chip
-                key={tag.id}
-                label={tag.text}
-                color="primary"
-                style={{ color: 'white' }}
-              />
-            ) : (
-              <React.Fragment
-                key={`${tag}-${index}`}
-              ></React.Fragment>
-            ),
+          {tags.map(
+            (tag) =>
+              tag.id !== 7 &&
+              tag.id !== 9 && (
+                <Chip
+                  key={tag.id}
+                  className={styles.chip}
+                  label={tag.text}
+                  color="primary"
+                />
+              ),
           )}
         </div>
       </div>

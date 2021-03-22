@@ -24,6 +24,78 @@ namespace API.Controllers
 
         // SEARCH QUERY CALL
 
+        // POST: api/Recipes (fake get, cause I need body...)
+        [HttpPost]
+        [Route("thumbnails")]
+        public async Task<ActionResult<PaginatedListHelper<RecipeThumbnail>>> GetRecipesQuery([FromBody] RecipeQuery query)
+        {
+            try
+            {
+                var recipes = from r in _context.Recipes select r;
+
+                // CHECK IF TAGSIDS AND DO SOMETHING
+
+                if (!string.IsNullOrEmpty(query.NameLike))
+                    recipes = recipes.Where(r => r.Title.Contains(query.NameLike));
+
+                // order by made client side to prevent api spam
+
+                #region [FilterBy]
+
+                //switch (query.FilterBy)
+                //{
+                //    case "alphabetical":
+                //        recipes = recipes.OrderBy(r => r.Title);
+                //        break;
+
+                //    case "alphabetical reversed":
+                //        recipes = recipes.OrderByDescending(r => r.Title);
+                //        break;
+
+                //    case "time":
+                //        var preferences = new List<string> { "Court", "Moyen", "Long" };
+                //        recipes = recipes.OrderBy(r => preferences.IndexOf(r.TimeToMake));
+                //        break;
+
+                //    case "rating":
+                //        recipes = recipes.OrderByDescending(r => r.Rating);
+                //        break;
+
+                //    case "favorite":
+                //        recipes = recipes.OrderByDescending(r => r.Favorite);
+                //        break;
+
+                //    default:
+                //        break;
+                //}
+
+                #endregion [FilterBy]
+
+                var items = recipes.AsNoTracking().Select(r => new RecipeThumbnail
+                {
+                    Id = r.ID,
+                    Title = r.Title,
+                    Rating = r.Rating,
+                    Favorite = r.Favorite,
+                    TimeToMake = r.TimeToMake,
+                    Type = r.Type,
+                    Tags = r.Tags.Select(t => new TagView { ID = t.ID, Text = t.Text }).ToList(),
+                    PictureData = PictureHelper.GetDataFromPicture(r.ID),
+                });
+
+                var res = await PaginatedListHelper<RecipeThumbnail>.CreateAsync(items, query.Page, query.PerPage);
+
+                // tried to do async, but ForEach is not compatible... find solution later?
+                //res.ForEach(async r => r.PictureData = await PictureHelper.GetDataFromPicture(r.Id));
+
+                return Ok(new RecipeThumbnails { Page = res.Page, TotalPages = res.TotalPages, Thumbnails = res });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e);
+            }
+        }
+
         // GET: api/Recipes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Recipe>> GetRecipe(int id)
@@ -35,7 +107,7 @@ namespace API.Controllers
                 if (recipe == null)
                     return NotFound();
 
-                recipe.PictureData = await PictureHelper.GetDataFromPicture(recipe.ID);
+                //recipe.PictureData = await PictureHelper.GetDataFromPicture(recipe.ID);
 
                 return Ok(recipe);
             }

@@ -3,7 +3,14 @@ import axios, {
   AxiosPromise,
   AxiosResponse,
 } from 'axios';
-import { IComment, IRecipe, ITag } from '../Utils/types';
+import {
+  IComment,
+  IQueryRes,
+  IRecipe,
+  IRecipesQuery,
+  IRecipeThumnail,
+  ITag,
+} from '../Utils/types';
 
 const API_BASE_URL = 'http://192.168.0.87:1337';
 
@@ -14,6 +21,12 @@ const api = axios.create({
 });
 
 // --[RecipesController]-----------------------------------------------------------
+export const GetRecipesQuery = async (
+  query: IRecipesQuery,
+): Promise<AxiosResponse<IQueryRes>> => {
+  return await api.post('Recipes/thumbnails', query);
+};
+
 export const GetRecipe = async (id: number): Promise<IRecipe> => {
   return await api.get(`Recipes/${id}`);
 };
@@ -21,7 +34,6 @@ export const GetRecipe = async (id: number): Promise<IRecipe> => {
 export const AddRecipe = async (
   recipe: IRecipe,
 ): Promise<AxiosResponse> => {
-  console.log(recipe);
   return await api.post('Recipes', recipe);
 };
 
