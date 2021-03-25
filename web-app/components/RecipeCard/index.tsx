@@ -86,19 +86,31 @@ export default function RecipeCard(props: IProps) {
           {title}
         </Typography>
         <Divider className={styles.divider} />
-        <div className={styles.tags}>
-          {tags.map(
-            (tag) =>
-              tag.id !== 7 &&
-              tag.id !== 9 && (
-                <Chip
-                  key={tag.id}
-                  className={styles.chip}
-                  label={tag.text}
-                  color="primary"
-                />
-              ),
-          )}
+        <div
+          className={styles.tags}
+          id={`tags-${id}`}
+          // allow horizontal scroll with mouse/finger
+          onWheel={(e) => {
+            var container = document.getElementById(`tags-${id}`);
+            var containerScrollPosition = document.getElementById(
+              `tags-${id}`,
+            ).scrollLeft;
+            container.scrollTo({
+              top: 0,
+              left: containerScrollPosition + e.deltaY,
+            });
+          }}
+        >
+          {tags
+            .filter((t) => t.id !== 7 && t.id !== 9)
+            .map((tag) => (
+              <Chip
+                key={tag.id}
+                className={styles.chip}
+                label={tag.text}
+                color="primary"
+              />
+            ))}
         </div>
       </div>
     </Card>

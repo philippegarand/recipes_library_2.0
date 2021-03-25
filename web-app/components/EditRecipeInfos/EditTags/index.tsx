@@ -37,9 +37,11 @@ export default function EditTags(props: IProps) {
   const [tagOptions, setTagOptions] = useState<IAddableTag[]>([]);
 
   const getPossibleTags = async () => {
-    const tags = await GetTags();
-    // @ts-ignore
-    setTagOptions(tags.data);
+    const res = await GetTags();
+    if (res.success) {
+      // @ts-ignore
+      setTagOptions(res.data);
+    }
   };
 
   useEffect(() => {

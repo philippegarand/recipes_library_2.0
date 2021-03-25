@@ -70,17 +70,24 @@
 }
 
 body .divider {
-  /*margin-top: auto*/
   margin: 0.125rem auto 0.5rem auto;
   width: 90%;
 }
 
 .tags {
+  margin: 0 auto;
+  width: calc(100% - 1rem);
   padding: 0 0.5rem 0.5rem 0.5rem;
   display: flex;
   gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
+  overflow-x: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  justify-content: safe center;
+}
+.tags::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 body .chip {

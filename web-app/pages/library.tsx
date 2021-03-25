@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useMediaQuery from '../Utils/CustomHooks/mediaQuery';
-import { IStoreState } from '../Utils/Store';
+import { ACTION_ENUM, IStoreState } from '../Utils/Store';
 import { Icon, Loading, RecipeCard } from '../components';
 import { Typography, Fab } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
@@ -11,6 +11,7 @@ import {
   FILTER_BY_ENUM,
   RECIPE_LENGHT_ENUM,
   ROUTES,
+  SEVERITY_ENUM,
 } from '../Utils/enums';
 import { useRouter } from 'next/router';
 import { GetRecipesQuery } from '../api/calls';
@@ -22,24 +23,25 @@ export const getServerSideProps: GetServerSideProps = async (
   context,
 ) => {
   const res = await GetRecipesQuery({
-    perPage: 40,
+    perPage: 20,
     page: 1,
     tagsIds: [],
-    //filterBy: FILTER_BY_ENUM.NONE,
     nameLike: '',
   });
 
   return {
     props: {
-      initialRecipes: res.data,
+      initialRecipes: res.success ? res.data : [],
+      error: !res.success && res?.error ? res.error : '',
     },
   };
 };
 
 export default function library(props: {
   initialRecipes: IQueryRes;
-  firstGet: boolean;
+  error: string;
 }) {
+  const dispatch = useDispatch();
   const { filterBy, selectedTags } = useSelector(
     (state: IStoreState) => state,
   );
@@ -47,16 +49,19 @@ export default function library(props: {
   const router = useRouter();
 
   const [recipes, setRecipes] = useState<IRecipeThumnail[]>(
-    props.initialRecipes.thumbnails,
+    props.initialRecipes?.thumbnails,
   );
   const [totalPages, setTotalPages] = useState<number>(
-    props.initialRecipes.totalPages,
+    props.initialRecipes?.totalPages,
   );
-  const [page, setPage] = useState<number>(props.initialRecipes.page);
-  const perPage = 40;
+  const [page, setPage] = useState<number>(1);
+  const perPage = 20;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInitialQuery, setIsInitialQuery] = useState<boolean>(true);
+  const [gotNewThumbnails, setGotNewThumbnails] = useState<boolean>(
+    true,
+  );
 
   useEffect(() => {
     const getRecipesThumbnails = async () => {
@@ -79,6 +84,7 @@ export default function library(props: {
       setRecipes(res.data.thumbnails);
       setTotalPages(res.data.totalPages);
       setIsLoading(false);
+      setGotNewThumbnails(true);
     };
 
     if (!isInitialQuery || (page !== 1 && !selectedTags.length)) {
@@ -88,6 +94,8 @@ export default function library(props: {
   }, [perPage, page, selectedTags, isInitialQuery]);
 
   useEffect(() => {
+    if (!recipes || !gotNewThumbnails) return;
+
     const newOrder = [...recipes];
 
     switch (filterBy) {
@@ -136,7 +144,19 @@ export default function library(props: {
     }
 
     setRecipes(newOrder);
-  }, [filterBy]);
+    setGotNewThumbnails(false);
+  }, [filterBy, page, gotNewThumbnails]);
+
+  useEffect(() => {
+    if (!props.error) return;
+    dispatch({
+      type: ACTION_ENUM.SNACKBAR,
+      severity: SEVERITY_ENUM.ERROR,
+      message: 'Une erreur est survenue, voir la console',
+      duration: 10000,
+    });
+    console.log(props.error);
+  }, [props.error]);
 
   if (isLoading) {
     return (
@@ -154,7 +174,7 @@ export default function library(props: {
 
       <div className={styles.mainDiv}>
         <div className={styles.recipes}>
-          {!recipes.length ? (
+          {!recipes?.length ? (
             <Typography className={styles.noResult}>
               Aucun résultat pour cette recherche...
             </Typography>

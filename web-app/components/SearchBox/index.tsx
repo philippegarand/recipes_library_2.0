@@ -37,7 +37,7 @@ export default function SearchBox() {
 
   const getPossibleTags = async () => {
     const res = await GetTags();
-    setTagOptions(res.data);
+    if (res.success) setTagOptions(res.data);
   };
 
   useEffect(() => {
