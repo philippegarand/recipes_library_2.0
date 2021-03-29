@@ -25,36 +25,29 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   libraryButton: {
-    marginRight: theme.spacing(2),
+    marginRight: '0.5rem',
   },
   title: {
     display: 'none',
-    flexGrow: 1,
+    flexGrow: 0.5,
     color: '#FFFFFF',
+    overflow: 'clip',
+    marginRight: '0.5rem',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
   },
   search: {
     position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    borderRadius: '0.25rem',
+    backgroundColor: fade('#fff', 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: fade('#fff', 0.25),
     },
-    marginLeft: 0,
+    marginLeft: 'auto',
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: '47%',
-      flexGrow: 0,
-    },
-    [theme.breakpoints.up('lg')]: {
-      marginLeft: theme.spacing(1),
-      width: '33%',
-      flexGrow: 0,
-    },
-    flexGrow: 0.75,
+    maxWidth: '32rem',
+    flexGrow: 1,
   },
 }));
 

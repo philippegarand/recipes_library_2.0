@@ -71,6 +71,9 @@ namespace API.Controllers
 
                 #endregion [FilterBy]
 
+                if (query.TagsIds.Count > 0)
+                    recipes = recipes.Where(r => r.Tags.Where(t => query.TagsIds.Contains(t.ID)).Distinct().Count() == query.TagsIds.Distinct().Count());
+
                 var items = recipes.AsNoTracking().Select(r => new RecipeThumbnail
                 {
                     Id = r.ID,

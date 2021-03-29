@@ -87,15 +87,17 @@ export default function library(props: {
       setGotNewThumbnails(true);
     };
 
-    if (!isInitialQuery || (page !== 1 && !selectedTags.length)) {
-      getRecipesThumbnails();
+    if (
+      !isInitialQuery ||
+      (page !== 1 && !selectedTags.length) ||
+      selectedTags.length > 0
+    ) {
       setIsInitialQuery(false);
+      getRecipesThumbnails();
     }
   }, [perPage, page, selectedTags, isInitialQuery]);
 
   useEffect(() => {
-    if (!recipes || !gotNewThumbnails) return;
-
     const newOrder = [...recipes];
 
     switch (filterBy) {

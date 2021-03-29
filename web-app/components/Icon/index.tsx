@@ -80,6 +80,7 @@ export default function Icon(props: IProps) {
   const Icon = iconsList[icon];
 
   return (
+    // @ts-ignore
     <Icon
       {...otherProps}
       className={className}

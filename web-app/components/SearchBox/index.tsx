@@ -8,6 +8,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { ACTION_ENUM, IStoreState } from '../../Utils/Store';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetTags } from '../../api/calls';
+import useMediaQuery from '../../Utils/CustomHooks/mediaQuery';
 
 const useStyles = makeStyles(() => ({
   clearIndicator: {
@@ -29,10 +30,10 @@ export default function SearchBox() {
   const { selectedTags } = useSelector((state: IStoreState) => state);
   const classes = useStyles();
   const dispatch = useDispatch();
+  const isMobile = useMediaQuery(600);
 
   const [tagOptions, setTagOptions] = useState([]);
-  const [width, setWidth] = useState(window.innerWidth);
-  const [nbOfTags, setNbOfTag] = useState(0);
+  const [nbOfTags, setNbOfTag] = useState(1);
   const [canSearchByName, setCanSearchByName] = useState(true);
 
   const getPossibleTags = async () => {
@@ -44,24 +45,12 @@ export default function SearchBox() {
     getPossibleTags();
   }, []);
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setWidth(window.innerWidth);
-  //   };
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, [width]);
-
-  // useEffect(() => {
-  //   if (width < 900) {
-  //     setNbOfTag(1);
-  //   } else {
-  //     setNbOfTag(3);
-  //   }
-  // }, [width]);
+  useEffect(() => {
+    setNbOfTag(isMobile ? 1 : 3);
+  }, [isMobile]);
 
   useEffect(() => {
-    setCanSearchByName(!selectedTags.some((t) => t.Key === -1));
+    setCanSearchByName(!selectedTags.some((t) => t.id === -1));
   }, [selectedTags]);
 
   const handleTagsChanged = (
@@ -75,68 +64,66 @@ export default function SearchBox() {
   };
 
   return (
-    <div>
-      <Autocomplete
-        multiple
-        limitTags={nbOfTags}
-        size="small"
-        autoHighlight
-        handleHomeEndKeys
-        freeSolo
-        classes={{
-          clearIndicator: classes.clearIndicator,
-        }}
-        options={tagOptions}
-        getOptionLabel={(option) => {
-          if (typeof option === 'string') {
-            return option;
-          }
-          if (option.inputValue) {
-            return option.inputValue;
-          }
-          return option.Value;
-        }}
-        filterOptions={(options, params) => {
-          const filtered = filter(options, params);
-          if (canSearchByName && params.inputValue !== '') {
-            filtered.push({
-              Key: -1,
-              Value: params.inputValue,
-              inputValue: `Rechercher par titre "${params.inputValue}"`,
-            });
-          }
-          return filtered;
-        }}
-        onChange={handleTagsChanged}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <CustomChip
-              key={index}
-              label={option.Value}
-              {...getTagProps({ index })}
-            />
-          ))
+    <Autocomplete
+      multiple
+      limitTags={nbOfTags}
+      size="small"
+      autoHighlight
+      handleHomeEndKeys
+      freeSolo
+      classes={{
+        clearIndicator: classes.clearIndicator,
+      }}
+      options={tagOptions}
+      getOptionLabel={(option) => {
+        if (typeof option === 'string') {
+          return option;
         }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            placeholder="Rechercher..."
-            fullWidth
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <>
-                  <InputAdornment position="start">
-                    <Icon icon="SearchIcon" customColor="white" />
-                  </InputAdornment>
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-            }}
+        if (option.inputValue) {
+          return option.inputValue;
+        }
+        return option.text;
+      }}
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params);
+        if (canSearchByName && params.inputValue !== '') {
+          filtered.push({
+            id: -1,
+            text: params.inputValue,
+            inputValue: `Rechercher par titre "${params.inputValue}"`,
+          });
+        }
+        return filtered;
+      }}
+      onChange={handleTagsChanged}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
+          <CustomChip
+            key={index}
+            label={option.text}
+            {...getTagProps({ index })}
           />
-        )}
-      />
-    </div>
+        ))
+      }
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          placeholder="Rechercher..."
+          fullWidth
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <>
+                <InputAdornment position="start">
+                  <Icon icon="SearchIcon" customColor="white" />
+                </InputAdornment>
+                {params.InputProps.startAdornment}
+              </>
+            ),
+          }}
+        />
+      )}
+    />
   );
 }
