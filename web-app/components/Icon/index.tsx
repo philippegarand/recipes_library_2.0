@@ -29,6 +29,7 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 import ShareIcon from '@material-ui/icons/Share';
 import SortByAlphaIcon from '@material-ui/icons/SortByAlpha';
 import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 
 import { IconProps } from '@material-ui/core';
@@ -65,6 +66,7 @@ export const iconsList = {
   ShareIcon,
   SortByAlphaIcon,
   StarIcon,
+  StarBorderIcon,
   WhatshotIcon,
 };
 

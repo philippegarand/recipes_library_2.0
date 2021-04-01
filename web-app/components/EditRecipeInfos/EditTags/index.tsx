@@ -57,7 +57,7 @@ export default function EditTags(props: IProps) {
 
       const res = await AddTag(newTag);
 
-      if (apiResponseIsError(res.status)) {
+      if (!res.success) {
         dispatch({
           type: ACTION_ENUM.SNACKBAR,
           severity: SEVERITY_ENUM.ERROR,

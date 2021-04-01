@@ -1,0 +1,194 @@
+/*BOTH*/
+.topLeft {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.imageContainer {
+  top: 50%;
+  position: relative;
+  transform: translateY(-50%);
+}
+
+.icons {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.25rem;
+}
+
+.iconText {
+  display: flex;
+  align-items: center;
+}
+
+.ingredients {
+  grid-area: ingredients;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.fabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: absolute !important;
+  bottom: 1rem;
+  /* bottom: 50%; */
+  right: 1rem;
+  z-index: 1000;
+}
+
+.editLength {
+  margin-left: 0.5rem;
+}
+
+body .divider {
+  margin: 0.25rem 0;
+}
+
+body .textRightToIcon {
+  margin-left: 0.25rem;
+}
+
+/*MOBILE*/
+.mainDiv {
+  position: relative;
+  overflow-y: auto;
+  height: calc(100vh - 3.5rem);
+  display: flex;
+  justify-content: center;
+}
+
+.recipe {
+  margin: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-areas:
+    'top'
+    'ingredients'
+    'steps'
+    'comments';
+}
+
+.card {
+  grid-area: top;
+  display: flex;
+  overflow: visible !important;
+}
+
+.img {
+  max-width: 175px;
+  display: block;
+}
+
+.likeIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.35);
+  border-bottom-right-radius: 6px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.likeIcon:hover {
+  cursor: pointer;
+}
+
+.shareIcon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.35);
+  border-bottom-left-radius: 6px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.shareIcon:hover {
+  cursor: pointer;
+}
+
+.divTitle {
+  padding: 0.25rem 1rem 0 1rem;
+}
+
+.rating {
+  width: min-content;
+  margin-bottom: 0;
+}
+
+.steps {
+  grid-area: steps;
+}
+
+.comments {
+  grid-area: comments;
+  width: 100%;
+}
+
+/*TABLETS AND DESKTOP*/
+@media (min-width: 37.5rem) {
+  .mainDiv {
+    height: calc(100vh - 4rem);
+  }
+
+  .recipe {
+    margin: 1rem;
+    grid-template-columns: 34% 66%;
+    grid-template-areas:
+      'top top'
+      'ingredients steps'
+      'comments comments';
+    max-width: 1260px;
+  }
+
+  .card {
+    width: calc(100% - 1rem);
+  }
+
+  .img {
+    max-width: 350px;
+  }
+
+  .likeIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .shareIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .rating {
+    margin-bottom: 1rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    gap: 6px;
+  }
+
+  .steps {
+    margin-left: 1rem;
+    width: calc(100% - 1rem);
+  }
+
+  .comments {
+    width: 65%;
+  }
+}

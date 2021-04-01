@@ -33,8 +33,6 @@ namespace API.Controllers
             {
                 var recipes = from r in _context.Recipes select r;
 
-                // CHECK IF TAGSIDS AND DO SOMETHING
-
                 if (!string.IsNullOrEmpty(query.NameLike))
                     recipes = recipes.Where(r => r.Title.Contains(query.NameLike));
 
@@ -105,14 +103,35 @@ namespace API.Controllers
         {
             try
             {
-                var recipe = await _context.Recipes.FindAsync(id);
+                var recipe = await _context.Recipes
+                    .Include(r => r.Ingredients)
+                    .Include(r => r.HomeIngredients)
+                    .Include(r => r.Steps)
+                    .Include(r => r.Comments)
+                    .Include(r => r.Tags)
+                    .FirstAsync(r => r.ID == id);
 
                 if (recipe == null)
                     return NotFound();
 
-                //recipe.PictureData = await PictureHelper.GetDataFromPicture(recipe.ID);
+                var view = new RecipeView
+                {
+                    ID = recipe.ID,
+                    Title = recipe.Title,
+                    TimeToMake = recipe.TimeToMake,
+                    ForHowMany = recipe.ForHowMany,
+                    Rating = recipe.Rating,
+                    Favorite = recipe.Favorite,
+                    Type = recipe.Type,
+                    PictureData = PictureHelper.GetDataFromPicture(recipe.ID),
+                    Ingredients = recipe.Ingredients,
+                    HomeIngredients = recipe.HomeIngredients,
+                    Comments = recipe.Comments.OrderByDescending(c => c.CommentedOn).ToList(),
+                    Steps = recipe.Steps,
+                    Tags = recipe.Tags.Select(t => new TagView { ID = t.ID, Text = t.Text }).ToList()
+                };
 
-                return Ok(recipe);
+                return Ok(view);
             }
             catch (Exception e)
             {
@@ -169,6 +188,89 @@ namespace API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, e);
             }
+        }
+
+        // POST: api/Recipes/5/comment
+        [HttpPost("{id}/comment")]
+        public async Task<ActionResult<Recipe>> PostComment(int id, [FromBody] string comment)
+        {
+            try
+            {
+                var recipe = await _context.Recipes.Include(r => r.Comments).FirstAsync(r => r.ID == id);
+
+                if (recipe == null)
+                    return NotFound();
+
+                var newComment = new Comment { Text = comment };
+                recipe.Comments.Add(newComment);
+                await _context.SaveChangesAsync();
+
+                return Created("Comment", newComment);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e);
+            }
+        }
+
+        // PUT: api/Recipes/5/favorite
+        [HttpPatch("{id}/favorite")]
+        public async Task<IActionResult> PatchFavorite(int id, bool favorite)
+        {
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if (recipe == null)
+                return NotFound();
+
+            recipe.Favorite = favorite;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RecipeExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // PUT: api/Recipes/5/rating
+        [HttpPatch("{id}/rating")]
+        public async Task<IActionResult> PatchRating(int id, int rating)
+        {
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if (recipe == null)
+                return NotFound();
+
+            recipe.Rating = rating;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RecipeExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         private bool RecipeExists(int id)

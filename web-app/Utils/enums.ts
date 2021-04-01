@@ -33,7 +33,7 @@ export enum SEVERITY_ENUM {
 export enum ROUTES {
   HOME = '/',
   LIBRARY = '/library',
-  RECIPE = '/recipe/:id',
+  RECIPE = '/recipes',
   IMPORT_RECIPE = '/importRecipe',
   NOT_FOUND = '/notFound',
 }

@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '32rem',
     flexGrow: 1,
   },
+  editIcon: {
+    marginLeft: 'auto',
+  },
 }));
 
 const StyledMenuItem = withStyles((theme) => ({
@@ -66,7 +69,7 @@ const StyledMenuItem = withStyles((theme) => ({
 const AppBarNameMap = new Map([
   [ROUTES.HOME, 'Menu principal'],
   [ROUTES.LIBRARY, 'Bibliothèque'],
-  [ROUTES.RECIPE, 'Recette'],
+  [`${ROUTES.RECIPE}/[id]`, 'Recette'],
   [ROUTES.IMPORT_RECIPE, 'Importer une recette'],
   [ROUTES.NOT_FOUND, 'Êtes-vous perdu ?'],
 ]);
@@ -116,7 +119,6 @@ export default function Header() {
   const { editMode } = useSelector((state: IStoreState) => state);
 
   const [currentPath, setCurrentPath] = useState(ROUTES.HOME);
-  const [openAlert, setOpenAlert] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
@@ -171,13 +173,6 @@ export default function Header() {
     );
   }, [router.pathname]);
 
-  const handleImportHelpOpen = () => {
-    setOpenAlert(true);
-  };
-  const handleImportHelpClose = () => {
-    setOpenAlert(false);
-  };
-
   const handleEditModeChange = () => {
     dispatch({
       type: ACTION_ENUM.EDIT_MODE,
@@ -203,57 +198,37 @@ export default function Header() {
           >
             {AppBarNameMap.get(currentPath)}
           </Typography>
-          {currentPath === ROUTES.LIBRARY ? (
-            <>
-              <div className={classes.search}>
-                <SearchBox />
-              </div>
-              <div style={{ marginLeft: '0.375rem' }}>
+          {
+            currentPath === ROUTES.LIBRARY ? (
+              <>
+                <div className={classes.search}>
+                  <SearchBox />
+                </div>
+                <div style={{ marginLeft: '0.375rem' }}>
+                  <IconButton
+                    edge="end"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleFilterMenuOpen}
+                    color="inherit"
+                    icon="FilterListIcon"
+                  />
+                </div>
+              </>
+            ) : currentPath === `${ROUTES.RECIPE}/[id]` ? (
+              editMode ? null : (
                 <IconButton
-                  edge="end"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleFilterMenuOpen}
-                  color="inherit"
-                  icon="FilterListIcon"
+                  className={classes.editIcon}
+                  edge="start"
+                  icon="EditIcon"
+                  onClick={handleEditModeChange}
                 />
-              </div>
-            </>
-          ) : currentPath === ROUTES.RECIPE ? (
-            editMode ? null : (
-              <IconButton
-                edge="start"
-                icon="EditIcon"
-                onClick={handleEditModeChange}
-              />
-            )
-          ) : currentPath === ROUTES.IMPORT_RECIPE ? (
-            <IconButton
-              edge="start"
-              icon="HelpOutlineIcon"
-              onClick={() => handleImportHelpOpen()}
-            />
-          ) : (
-            <></>
-          )}
+              )
+            ) : currentPath === ROUTES.IMPORT_RECIPE ? null : null // /> //   icon="HelpOutlineIcon" //   edge="start" // <IconButton
+          }
         </Toolbar>
       </AppBar>
-
       {currentPath === ROUTES.LIBRARY && renderMenu}
-
-      <AlertDialog
-        title="Comment importer une recette?"
-        content="
-        1. Choisir une recette sous forme de fichier Png ou Jpg.\n
-        2. Suivre les étapes inscrites au bas de l'écran.\n
-        3. Pour sélectionner une zone sur l'image, utilisez la souris.\n
-        4. Une fois sélectionnée, la zone peut être modifiée et déplacée à l'aide des flèches du clavier.\n
-        5. Appuyez sur le boutton 'Accepter' ou 'Refuser' à côté de l'aperçu de l'image sélectionnée, ou utilisez les touches 'Y' ou 'N' pour confirmer la sélection.\n
-        6. Assurez-vous qu'il n'y a pas de blanc autour de l'image dans l'apreçu.\n
-        7. Lorsque toutes les informations sont entrées, appuyez sur 'Suivant' pour poursuivre."
-        open={openAlert}
-        handleClose={handleImportHelpClose}
-      />
     </div>
   );
 }

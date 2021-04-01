@@ -56,23 +56,57 @@ export const GetRecipesQuery = async (
   return await API('POST', 'Recipes/thumbnails', query);
 };
 
-export const GetRecipe = async (id: number): Promise<IRecipe> => {
-  // TODO: new api call
-  return await api.get(`Recipes/${id}`);
+// TODO: to test
+export const GetRecipe = async (
+  id: string,
+): Promise<IApiRes<IRecipe>> => {
+  return await API('GET', `Recipes/${id}`);
 };
 
 export const AddRecipe = async (
   recipe: IRecipe,
-): Promise<AxiosResponse> => {
-  // TODO: new api call
-  return await api.post('Recipes', recipe);
+): Promise<IApiRes<{ id: number }>> => {
+  return await API('POST', 'Recipes', recipe);
 };
 
+export const EditFavorite = async (
+  id: number,
+  favorite: boolean,
+): Promise<IApiRes<any>> => {
+  return await API(
+    'PATCH',
+    `Recipes/${id}/favorite`,
+    JSON.stringify(favorite),
+  );
+};
+
+export const EditRating = async (
+  id: number,
+  rating: number,
+): Promise<IApiRes<any>> => {
+  return await API(
+    'PATCH',
+    `Recipes/${id}/rating`,
+    JSON.stringify(rating),
+  );
+};
+
+export const AddComment = async (
+  recipeId: number,
+  comment: string,
+): Promise<IApiRes<IComment>> => {
+  return await API(
+    'POST',
+    `Recipes/${recipeId}/comment`,
+    JSON.stringify(comment),
+  );
+};
+
+// TODO: to test
 export const EditRecipe = async (
   recipe: IRecipe,
-): Promise<AxiosResponse> => {
-  // TODO: new api call
-  return await api.put(`Recipes/${recipe.id}`, { recipe });
+): Promise<IApiRes<any>> => {
+  return await API('PUT', `Recipes/${recipe.id}`, { recipe });
 };
 
 // --[TagsController]--------------------------------------------------------------
@@ -80,15 +114,6 @@ export const GetTags = async (): Promise<IApiRes<ITag[]>> => {
   return await API('GET', 'Tags');
 };
 
-// TODO: new api call
-export const AddTag = async (tag: string): Promise<AxiosResponse> => {
-  return await api.post('Tags', JSON.stringify(tag));
-};
-
-// --[CommentsController]----------------------------------------------------------
-// TODO: new api call
-export const AddComment = async (
-  comment: IComment,
-): Promise<AxiosResponse> => {
-  return await api.post('Comments', { comment });
+export const AddTag = async (tag: string): Promise<IApiRes<ITag>> => {
+  return await API('POST', 'Tags', JSON.stringify(tag));
 };

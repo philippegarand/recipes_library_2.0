@@ -37,6 +37,6 @@
   max-width: 1.25rem;
 }
 
-.avatar {
+body .avatar {
   background-color: #3cc47c;
 }

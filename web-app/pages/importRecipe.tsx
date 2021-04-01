@@ -179,7 +179,7 @@ export default function importRecipe() {
 
       const res = await AddRecipe(recipe);
 
-      if (apiResponseIsError(res.status)) {
+      if (!res.success) {
         dispatch({
           type: ACTION_ENUM.SNACKBAR,
           severity: SEVERITY_ENUM.ERROR,

@@ -42,7 +42,7 @@ interface IProps {
   steps: string[];
   saveToFormik: Function;
   onClose: any;
-  onEditDone: Function;
+  onEditDone?: Function;
 }
 
 export default function EditRecipeText(props: IProps) {

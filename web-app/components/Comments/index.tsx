@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Avatar,
-  Box,
   Card,
   Divider,
   List,
@@ -18,9 +17,9 @@ import styles from './Comments.module.css';
 import { SEVERITY_ENUM } from '../../Utils/enums';
 import { useDispatch } from 'react-redux';
 import { ACTION_ENUM } from '../../Utils/Store';
-import { apiResponseIsError } from '../../Utils/validationFunctions';
 import moment from 'moment-timezone';
 import { IComment } from '../../Utils/types';
+import { AddComment } from '../../api/calls';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -38,14 +37,15 @@ interface FormValue {
 interface IProps {
   comments: IComment[];
   recipeId: number;
+  className?: any;
 }
 
 export default function Comments(props: IProps) {
-  const { comments: commentsProps, recipeId } = props;
+  const { comments: commentsProps, recipeId, className } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<IComment[]>([]);
   const [isCommenting, setIsCommenting] = useState<boolean>(false);
 
   const commentRef = useRef(null);
@@ -71,33 +71,29 @@ export default function Comments(props: IProps) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values: FormValue) => {
-      // const { comment } = values;
-      // const { data, status } = await api('/api/DB/addComment', {
-      //   method: 'POST',
-      //   body: JSON.stringify({
-      //     RecipeId: Number(recipeId),
-      //     Content: comment,
-      //   }),
-      // });
-      // if (apiResponseIsError(status)) {
-      //   dispatch({
-      //     type: ACTION_ENUM.SNACKBAR,
-      //     severity: SEVERITY_ENUM.ERROR,
-      //     message: 'Une erreur est survenue',
-      //   });
-      //   return;
-      // }
-      // formik.resetForm();
-      // setIsCommenting(false);
-      // setComments([
-      //   {
-      //     id: data,
-      //     recipeId: Number(recipeId),
-      //     content: comment,
-      //     commentedOn: moment().toDate().toUTCString(),
-      //   },
-      //   ...comments,
-      // ]);
+      const res = await AddComment(recipeId, values.comment);
+
+      console.log(res);
+
+      if (!res.success) {
+        dispatch({
+          type: ACTION_ENUM.SNACKBAR,
+          severity: SEVERITY_ENUM.ERROR,
+          message: 'Une erreur est survenue',
+        });
+        return;
+      }
+
+      formik.resetForm();
+      setIsCommenting(false);
+      setComments([
+        {
+          id: res.data.id,
+          text: res.data.text,
+          commentedOn: res.data.commentedOn,
+        },
+        ...comments,
+      ]);
     },
   });
 
@@ -106,17 +102,13 @@ export default function Comments(props: IProps) {
     setIsCommenting(true);
   };
 
-  // const handleCommentChange = (event, ...args) => {
-  //   formik.handleChange(event, ...args);
-  // };
-
   const handleClear = () => {
     formik.resetForm();
     setIsCommenting(false);
   };
 
   return (
-    <div ref={commentRef}>
+    <div className={className} ref={commentRef}>
       <div className={styles.title} onClick={handleAddNewComment}>
         <div className={styles.commentIcon}>
           <Icon
@@ -125,11 +117,9 @@ export default function Comments(props: IProps) {
             customColor="#353535"
           />
         </div>
-        <Typography component="div" className={styles.titleText}>
-          <Box fontWeight={400}>{`COMMENTAIRES (${
-            comments?.length || 0
-          })`}</Box>
-        </Typography>
+        <Typography variant="h5">{`COMMENTAIRES (${
+          comments?.length || 0
+        })`}</Typography>
         <IconButton
           className={styles.btnAdd}
           icon="AddCircleIcon"
@@ -146,7 +136,6 @@ export default function Comments(props: IProps) {
                 <TextField
                   id="comment"
                   name="comment"
-                  //onChange={handleCommentChange}
                   onChange={formik.handleChange}
                   error={Boolean(formik.errors['comment'])}
                   helperText={formik.errors['comment']}
@@ -177,16 +166,10 @@ export default function Comments(props: IProps) {
               alignItems="flex-start"
             >
               <ListItemAvatar className={styles.listItemAvatar}>
-                <Avatar
-                  className={styles.avatar}
-                  variant="rounded"
-                  // style={{
-                  //   backgroundColor: '#3CC47C',
-                  // }}
-                />
+                <Avatar className={styles.avatar} variant="rounded" />
               </ListItemAvatar>
               <ListItemText
-                primary={comment.content}
+                primary={comment.text}
                 secondary={moment(comment.commentedOn)
                   .tz('America/New_York')
                   .format('DD/MM/YYYY')}
