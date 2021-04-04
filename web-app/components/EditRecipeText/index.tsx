@@ -28,18 +28,18 @@ function PaperComponent(props: PaperProps) {
 
 interface FormValue {
   title: string;
-  ingredients: string[];
-  homeIngredients: string[];
-  steps: string[];
+  ingredients: { id?: number; text: string }[];
+  homeIngredients: { id?: number; text: string }[];
+  steps: { id?: number; text: string }[];
 }
 
 interface IProps {
   editMode?: boolean;
   open: boolean;
-  title: string;
-  ingredients: string[];
-  homeIngredients: string[];
-  steps: string[];
+  title?: string;
+  ingredients: { id?: number; text: string }[];
+  homeIngredients: { id?: number; text: string }[];
+  steps: { id?: number; text: string }[];
   saveToFormik: Function;
   onClose: any;
   onEditDone?: Function;
@@ -73,23 +73,22 @@ export default function EditRecipeText(props: IProps) {
     }
 
     for (let index = 0; index < ingredients.length; index++) {
-      if (!ingredients[index]) {
+      if (!ingredients[index].text) {
         errors.ingredients[index] = 'Ne peut pas être vide';
       }
     }
 
     for (let index = 0; index < homeIngredients.length; index++) {
-      if (!homeIngredients[index]) {
+      if (!homeIngredients[index].text) {
         errors.homeIngredients[index] = 'Ne peut pas être vide';
       }
     }
 
     for (let index = 0; index < steps.length; index++) {
-      if (!steps[index]) {
+      if (!steps[index].text) {
         errors.steps[index] = 'Ne peut pas être vide';
-      } else if (/^\d/.test(steps[index])) {
-        errors.steps[index] =
-          'Ne doit pas être numérotée, mais simplement en ordre';
+      } else if (/^\d/.test(steps[index].text)) {
+        errors.steps[index] = 'Ne doit pas être numérotée, mais simplement en ordre';
       }
     }
 
@@ -119,14 +118,18 @@ export default function EditRecipeText(props: IProps) {
       const { title, ingredients, homeIngredients, steps } = values;
 
       const data = {
-        ingredients: ingredients.map((i) => i.trim()),
-        homeIngredients: homeIngredients.map((i) => i.trim()),
-        steps: steps.map((i) => i.trim()),
+        ingredients: ingredients.map((i) => ({
+          ...i,
+          text: i.text.trim(),
+        })),
+        homeIngredients: homeIngredients.map((i) => ({
+          ...i,
+          text: i.text.trim(),
+        })),
+        steps: steps.map((i) => ({ ...i, text: i.text.trim() })),
       };
 
-      saveToFormik(
-        editMode ? data : { ...data, title: title.trim() },
-      );
+      saveToFormik(editMode ? data : { ...data, title: title.trim() });
 
       if (!editMode) onEditDone();
       onClose();
@@ -160,10 +163,7 @@ export default function EditRecipeText(props: IProps) {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle
-        style={{ cursor: 'move' }}
-        id="draggable-dialog-title"
-      >
+      <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
         Modifier les informations de la recette
       </DialogTitle>
 
@@ -211,11 +211,7 @@ export default function EditRecipeText(props: IProps) {
       </DialogContent>
 
       <DialogActions>
-        <Button
-          variant="text"
-          onClick={onClose}
-          style={{ color: '#C90E0E' }}
-        >
+        <Button variant="text" onClick={onClose} style={{ color: '#C90E0E' }}>
           Fermer
         </Button>
         <Button

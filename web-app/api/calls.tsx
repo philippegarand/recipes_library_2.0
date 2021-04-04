@@ -3,6 +3,7 @@ import {
   IComment,
   IQueryRes,
   IRecipe,
+  IRecipeChanges,
   IRecipesQuery,
   IRecipeThumnail,
   ITag,
@@ -42,9 +43,7 @@ const API = async (
           }
         : {
             success: false,
-            error: `Api error: ${getJsonIndented(
-              error.response.data,
-            )}`,
+            error: `Api error: ${getJsonIndented(error.response.data)}`,
           };
     });
 };
@@ -57,9 +56,7 @@ export const GetRecipesQuery = async (
 };
 
 // TODO: to test
-export const GetRecipe = async (
-  id: string,
-): Promise<IApiRes<IRecipe>> => {
+export const GetRecipe = async (id: string): Promise<IApiRes<IRecipe>> => {
   return await API('GET', `Recipes/${id}`);
 };
 
@@ -73,40 +70,29 @@ export const EditFavorite = async (
   id: number,
   favorite: boolean,
 ): Promise<IApiRes<any>> => {
-  return await API(
-    'PATCH',
-    `Recipes/${id}/favorite`,
-    JSON.stringify(favorite),
-  );
+  return await API('PATCH', `Recipes/${id}/favorite`, JSON.stringify(favorite));
 };
 
 export const EditRating = async (
   id: number,
   rating: number,
 ): Promise<IApiRes<any>> => {
-  return await API(
-    'PATCH',
-    `Recipes/${id}/rating`,
-    JSON.stringify(rating),
-  );
+  return await API('PATCH', `Recipes/${id}/rating`, JSON.stringify(rating));
 };
 
 export const AddComment = async (
   recipeId: number,
   comment: string,
 ): Promise<IApiRes<IComment>> => {
-  return await API(
-    'POST',
-    `Recipes/${recipeId}/comment`,
-    JSON.stringify(comment),
-  );
+  return await API('POST', `Recipes/${recipeId}/comment`, JSON.stringify(comment));
 };
 
 // TODO: to test
 export const EditRecipe = async (
-  recipe: IRecipe,
+  recipeId: number,
+  changes: IRecipeChanges,
 ): Promise<IApiRes<any>> => {
-  return await API('PUT', `Recipes/${recipe.id}`, { recipe });
+  return await API('PUT', `Recipes/${recipeId}`, JSON.stringify(changes));
 };
 
 // --[TagsController]--------------------------------------------------------------

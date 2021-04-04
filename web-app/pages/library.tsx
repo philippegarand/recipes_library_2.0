@@ -162,9 +162,14 @@ export default function library(props: {
 
   if (isLoading) {
     return (
-      <div className={styles.mainDiv}>
-        <Loading />
-      </div>
+      <>
+        <Head>
+          <title>Bibliothèque</title>
+        </Head>
+        <div className={styles.mainDiv}>
+          <Loading />
+        </div>
+      </>
     );
   }
 

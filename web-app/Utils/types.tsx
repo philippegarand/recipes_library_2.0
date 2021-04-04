@@ -1,4 +1,5 @@
 import {
+  DIFF_VALUE,
   FOR_HOW_MANY_ENUM,
   RECIPE_LENGHT_ENUM,
   RECIPE_TYPE_ENUM,
@@ -55,6 +56,31 @@ export interface IRecipesQuery {
   tagsIds: number[];
   nameLike: string;
   //filterBy: string;
+}
+
+type normalItem = {
+  id: number;
+  number: number;
+  text: string;
+};
+
+type changedItem = {
+  id: changedItemObj<number>;
+  number: changedItemObj<number>;
+  text: changedItemObj<string>;
+};
+
+type changedItemObj<T> = {
+  type: DIFF_VALUE;
+  data: T;
+};
+export interface IRecipeChanges {
+  title?: string;
+  forHowMany?: FOR_HOW_MANY_ENUM;
+  timeToMake?: RECIPE_LENGHT_ENUM;
+  ingredients?: changedItemObj<normalItem> | changedItem;
+  homeIngredients?: changedItemObj<normalItem> | changedItem;
+  steps?: changedItemObj<normalItem> | changedItem;
 }
 
 export interface IRecipeThumnail {

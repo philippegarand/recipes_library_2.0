@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Chip, TextField, withStyles } from '@material-ui/core';
 import { Autocomplete, createFilterOptions } from '@material-ui/lab';
 import { useDispatch } from 'react-redux';
-import { apiResponseIsError } from '../../../Utils/validationFunctions';
 import { ACTION_ENUM } from '../../../Utils/Store';
 import { SEVERITY_ENUM } from '../../../Utils/enums';
 import { FormikProps } from 'formik';

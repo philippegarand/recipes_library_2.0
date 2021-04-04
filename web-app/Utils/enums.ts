@@ -37,3 +37,10 @@ export enum ROUTES {
   IMPORT_RECIPE = '/importRecipe',
   NOT_FOUND = '/notFound',
 }
+
+export enum DIFF_VALUE {
+  VALUE_CREATED = 'created',
+  VALUE_UPDATED = 'updated',
+  VALUE_DELETED = 'deleted',
+  VALUE_UNCHANGED = 'unchanged',
+}

@@ -28,7 +28,7 @@ const getListStyle = (isDraggingOver) => ({
 interface IProps {
   className: string;
   title: string;
-  items: string[];
+  items: { id?: number; text: string }[];
   onChange: ([]) => void;
   errors: string[];
 }
@@ -37,7 +37,7 @@ export default function ListReorder(props: IProps) {
   const { className, title, items, onChange, errors } = props;
 
   const handleAdd = () => {
-    onChange([...items, '']);
+    onChange([...items, { text: '' }]);
   };
 
   const handleRemove = (index) => {
@@ -48,7 +48,7 @@ export default function ListReorder(props: IProps) {
 
   const handleItemChange = (index: number, newVal: string) => {
     const temp = [...items];
-    temp[index] = newVal;
+    temp[index].text = newVal;
     onChange(temp);
   };
 
@@ -91,7 +91,7 @@ export default function ListReorder(props: IProps) {
                       refProp={provided.innerRef}
                       draggableProps={provided.draggableProps}
                       dragHandleProps={provided.dragHandleProps}
-                      text={item}
+                      text={item.text}
                       index={index + 1}
                       onRemove={() => handleRemove(index)}
                       onChange={(newVal) =>
