@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '@material-ui/core';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
@@ -44,13 +38,7 @@ export async function getStaticProps() {
 
 const pixelRatio = 1; // window.devicePixelRatio || 1;
 
-const blobNames = [
-  'title',
-  'ingredients',
-  'home ingredients',
-  'steps',
-  'picture',
-];
+const blobNames = ['title', 'ingredients', 'home ingredients', 'steps', 'picture'];
 
 interface formikAfterOcr {
   title?: string;
@@ -85,17 +73,8 @@ export default function importRecipe() {
   const [ocrDone, setOcrDone] = useState<boolean>(false);
   const [editOcr, setEditOcr] = useState<boolean>(false);
   const [editDone, setEditDone] = useState<boolean>(false);
-  const [cropBlobs, setCropBlobs] = useState([
-    null,
-    null,
-    null,
-    null,
-    null,
-  ]);
-  const [
-    formikAfterOcr,
-    setFormikAfterOcr,
-  ] = useState<formikAfterOcr>({});
+  const [cropBlobs, setCropBlobs] = useState([null, null, null, null, null]);
+  const [formikAfterOcr, setFormikAfterOcr] = useState<formikAfterOcr>({});
 
   const [uploadedImage, setUploadedImage] = useState(null);
   const imgRef = useRef(null);
@@ -161,21 +140,22 @@ export default function importRecipe() {
         favorite: favorite,
         type: recipeType,
         tags: tags.map((t) => ({ id: t.id, text: t.text })),
-        ingredients: ingredients.map((i, index) => ({
+        ingredients: ingredients.map((i: any, index) => ({
           number: index + 1,
-          text: i,
+          text: i.text,
         })),
-        homeIngredients: homeIngredients.map((i, index) => ({
+        homeIngredients: homeIngredients.map((i: any, index) => ({
           number: index + 1,
-          text: i,
+          text: i.text,
         })),
-        steps: steps.map((s, index) => ({
+        steps: steps.map((s: any, index) => ({
           number: index + 1,
-          text: s,
+          text: s.text,
         })),
         comments: comments ? [{ text: comments }] : [],
       };
 
+      console.log({ recipe });
       const res = await AddRecipe(recipe);
 
       if (!res.success) {
@@ -222,9 +202,7 @@ export default function importRecipe() {
       scheduler.addWorker(worker);
 
       const results = await Promise.all(
-        cropBlobs
-          .slice(0, -1)
-          .map((blob) => scheduler.addJob('recognize', blob)),
+        cropBlobs.slice(0, -1).map((blob) => scheduler.addJob('recognize', blob)),
       );
 
       await scheduler.terminate();
@@ -281,11 +259,7 @@ export default function importRecipe() {
   }, []);
 
   useEffect(() => {
-    if (
-      !completedCrops ||
-      !previewCanvasRef.current ||
-      !imgRef.current
-    ) {
+    if (!completedCrops || !previewCanvasRef.current || !imgRef.current) {
       return;
     }
 
@@ -396,9 +370,7 @@ export default function importRecipe() {
   const centerDivRef = useRef(null);
 
   const UploadedImage = useMemo(() => {
-    const handleImageKeyDown = (
-      e: React.KeyboardEvent<HTMLDivElement>,
-    ) => {
+    const handleImageKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'y') {
         handleAcceptCrop();
       }
@@ -408,6 +380,7 @@ export default function importRecipe() {
     };
 
     const saveToFormik = (infos) => {
+      console.log({ infos });
       formik.setFieldValue('title', infos.title);
       formik.setFieldValue('ingredients', infos.ingredients);
       formik.setFieldValue('homeIngredients', infos.homeIngredients);
@@ -422,8 +395,7 @@ export default function importRecipe() {
       >
         <ReactCrop
           imageStyle={{
-            maxWidth: centerDivRef.current?.clientWidth,
-            maxHeight: centerDivRef.current?.clientHeight,
+            maxHeight: '75vh',
           }}
           src={uploadedImage}
           disabled={selectionStep === 5}
@@ -443,9 +415,11 @@ export default function importRecipe() {
         {editOcr ? (
           <EditRecipeText
             title={formik.values.title}
-            ingredients={formik.values.ingredients}
-            homeIngredients={formik.values.homeIngredients}
-            steps={formik.values.steps}
+            ingredients={formik.values.ingredients.map((x) => ({ text: x }))}
+            homeIngredients={formik.values.homeIngredients.map((x) => ({
+              text: x,
+            }))}
+            steps={formik.values.steps.map((x) => ({ text: x }))}
             open={editOcr}
             saveToFormik={saveToFormik}
             onClose={() => setEditOcr(false)}
@@ -453,9 +427,7 @@ export default function importRecipe() {
           />
         ) : null}
       </div>
-    ) : (
-      <></>
-    );
+    ) : null;
   }, [
     uploadedImage,
     crops,
@@ -470,13 +442,8 @@ export default function importRecipe() {
 
   const LeftPanel = useMemo(() => {
     return uploadedImage ? (
-      <div
-        className={[styles.leftScreen, styles.paddingTop].join(' ')}
-      >
-        <LeftPanelControls
-          formik={formik}
-          selectionStep={selectionStep}
-        />
+      <div className={[styles.leftScreen, styles.paddingTop].join(' ')}>
+        <LeftPanelControls formik={formik} selectionStep={selectionStep} />
       </div>
     ) : (
       <div className={styles.leftScreen} />
@@ -485,9 +452,7 @@ export default function importRecipe() {
 
   const RightPanel = useMemo(() => {
     return uploadedImage ? (
-      <div
-        className={[styles.rightScreen, styles.paddingTop].join(' ')}
-      >
+      <div className={[styles.rightScreen, styles.paddingTop].join(' ')}>
         <RightPanelControls formik={formik} />
       </div>
     ) : (
@@ -499,10 +464,7 @@ export default function importRecipe() {
     const handleNext = async () => {
       formik.setFieldValue('title', formikAfterOcr.title);
       formik.setFieldValue('ingredients', formikAfterOcr.ingredients);
-      formik.setFieldValue(
-        'homeIngredients',
-        formikAfterOcr.homeIngredients,
-      );
+      formik.setFieldValue('homeIngredients', formikAfterOcr.homeIngredients);
       formik.setFieldValue('steps', formikAfterOcr.steps);
 
       setEditOcr(true);
@@ -573,12 +535,8 @@ export default function importRecipe() {
                 ref={previewCanvasRef}
                 style={{
                   display: 'block',
-                  width: Math.round(
-                    completedCrops[selectionStep]?.width ?? 0,
-                  ),
-                  height: Math.round(
-                    completedCrops[selectionStep]?.height ?? 0,
-                  ),
+                  width: Math.round(completedCrops[selectionStep]?.width ?? 0),
+                  height: Math.round(completedCrops[selectionStep]?.height ?? 0),
                 }}
               />
             </Card>

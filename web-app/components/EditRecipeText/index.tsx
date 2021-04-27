@@ -75,12 +75,18 @@ export default function EditRecipeText(props: IProps) {
     for (let index = 0; index < ingredients.length; index++) {
       if (!ingredients[index].text) {
         errors.ingredients[index] = 'Ne peut pas être vide';
+      } else if (ingredients[index].text.indexOf('%') > -1) {
+        errors.ingredients[index] =
+          "Présence de '%', c'est probablement une fraction";
       }
     }
 
     for (let index = 0; index < homeIngredients.length; index++) {
       if (!homeIngredients[index].text) {
         errors.homeIngredients[index] = 'Ne peut pas être vide';
+      } else if (homeIngredients[index].text.indexOf('%') > -1) {
+        errors.homeIngredients[index] =
+          "Présence de '%', c'est probablement une fraction";
       }
     }
 
@@ -89,6 +95,8 @@ export default function EditRecipeText(props: IProps) {
         errors.steps[index] = 'Ne peut pas être vide';
       } else if (/^\d/.test(steps[index].text)) {
         errors.steps[index] = 'Ne doit pas être numérotée, mais simplement en ordre';
+      } else if (steps[index].text.indexOf('%') > -1) {
+        errors.steps[index] = "Présence de '%', c'est probablement une fraction";
       }
     }
 

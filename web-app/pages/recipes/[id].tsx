@@ -5,6 +5,7 @@ import {
   IHomeIngredient,
   IIngredient,
   IRecipe,
+  IRecipeChanges,
   IStep,
   ITag,
 } from '../../Utils/types';
@@ -237,8 +238,42 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
         return;
       }
 
+      let changes: IRecipeChanges = diffs;
+      for (const [key, value] of Object.entries(diffs)) {
+        //if (key === 'forHowMany')
+        if (key === 'homeIngredients') {
+          let arr = [];
+          for (const [k, v] of Object.entries(value)) {
+            arr.push(v);
+          }
+          changes['homeIngredients'] = arr;
+        }
+        if (key === 'ingredients') {
+          let arr = [];
+          for (const [k, v] of Object.entries(value)) {
+            arr.push(v);
+          }
+          changes['ingredients'] = arr;
+        }
+        if (key === 'steps') {
+          let arr = [];
+          for (const [k, v] of Object.entries(value)) {
+            arr.push(v);
+          }
+          changes['steps'] = arr;
+        }
+        if (key === 'tags') {
+          let arr = [];
+          for (const [k, v] of Object.entries(value)) {
+            arr.push(v);
+          }
+          changes['tags'] = arr;
+        }
+      }
+
+      console.log({ changes });
       console.log('send to api');
-      //const res = await EditRecipe(id, diffs);
+      const res = await EditRecipe(id, changes);
     },
   });
 
@@ -446,8 +481,8 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
               <Typography variant="h5">INGRÉDIENTS</Typography>
             )}
             <List dense disablePadding>
-              {ingredients ? (
-                ingredients.map((ing) => (
+              {formik.values.ingredients ? (
+                formik.values.ingredients.map((ing) => (
                   <ListItem
                     key={ing.number}
                     classes={{ root: classes.item }}
@@ -461,8 +496,8 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                 <></>
               )}
               <Divider className={styles.divider} />
-              {homeIngredients &&
-                homeIngredients.map((ahi) => (
+              {formik.values.homeIngredients &&
+                formik.values.homeIngredients.map((ahi) => (
                   <ListItem
                     key={ahi.number}
                     classes={{ root: classes.item }}
@@ -490,8 +525,8 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
               <Typography variant="h5">PRÉPARATION</Typography>
             )}
             <List dense disablePadding className={styles.steps}>
-              {steps &&
-                steps.map((step) => (
+              {formik.values.steps &&
+                formik.values.steps.map((step) => (
                   <ListItem key={step.number} classes={{ root: classes.item }}>
                     <ListItemText
                       primary={
@@ -521,15 +556,15 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
           <EditRecipeText
             editMode
             open={openEditText}
-            ingredients={ingredients?.map((x) => ({
+            ingredients={formik.values.ingredients?.map((x) => ({
               id: x.id,
               text: x.text,
             }))}
-            homeIngredients={homeIngredients?.map((x) => ({
+            homeIngredients={formik.values.homeIngredients?.map((x) => ({
               id: x.id,
               text: x.text,
             }))}
-            steps={steps?.map((x) => ({ id: x.id, text: x.text }))}
+            steps={formik.values.steps?.map((x) => ({ id: x.id, text: x.text }))}
             saveToFormik={saveToFormik}
             onClose={() => setOpenEditText(false)}
           />

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EFDataAccessLibrary.DataAccess;
 using Models;
 using API.Helpers;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -141,14 +142,24 @@ namespace API.Controllers
 
         // PUT: api/Recipes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRecipe(int id, Recipe recipe)
+        public async Task<IActionResult> PutRecipe(int id, [FromBody] string jsonStrChanges)
         {
-            if (id != recipe.ID)
-            {
-                return BadRequest();
-            }
+            var changes = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStrChanges);
+
+            var recipe = await _context.Recipes
+                    .Include(r => r.Ingredients)
+                    .Include(r => r.HomeIngredients)
+                    .Include(r => r.Steps)
+                    .Include(r => r.Comments)
+                    .Include(r => r.Tags)
+                    .FirstAsync(r => r.ID == id);
+
+            if (recipe == null)
+                return NotFound();
 
             _context.Entry(recipe).State = EntityState.Modified;
+
+            // do stuff here
 
             try
             {

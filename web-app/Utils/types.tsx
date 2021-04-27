@@ -70,6 +70,11 @@ type changedItem = {
   text: changedItemObj<string>;
 };
 
+type changedTag = {
+  id: changedItemObj<number>;
+  text: changedItemObj<string>;
+};
+
 type changedItemObj<T> = {
   type: DIFF_VALUE;
   data: T;
@@ -78,9 +83,10 @@ export interface IRecipeChanges {
   title?: string;
   forHowMany?: FOR_HOW_MANY_ENUM;
   timeToMake?: RECIPE_LENGHT_ENUM;
-  ingredients?: changedItemObj<normalItem> | changedItem;
-  homeIngredients?: changedItemObj<normalItem> | changedItem;
-  steps?: changedItemObj<normalItem> | changedItem;
+  tags?: changedItemObj<ITag>[] | changedTag[];
+  ingredients?: changedItemObj<normalItem>[] | changedItem[];
+  homeIngredients?: changedItemObj<normalItem>[] | changedItem[];
+  steps?: changedItemObj<normalItem>[] | changedItem[];
 }
 
 export interface IRecipeThumnail {

@@ -32,7 +32,10 @@
 }
 
 .bottomScreen {
+  display: flex;
   grid-area: bottom;
+  justify-content: center;
+  align-items: center;
 }
 
 .image {
