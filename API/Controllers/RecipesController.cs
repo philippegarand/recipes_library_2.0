@@ -9,6 +9,7 @@ using EFDataAccessLibrary.DataAccess;
 using Models;
 using API.Helpers;
 using Newtonsoft.Json;
+using EFDataAccessLibrary.Models;
 
 namespace API.Controllers
 {
@@ -105,9 +106,9 @@ namespace API.Controllers
             try
             {
                 var recipe = await _context.Recipes
-                    .Include(r => r.Ingredients)
-                    .Include(r => r.HomeIngredients)
-                    .Include(r => r.Steps)
+                    .Include(r => r.Ingredients.OrderBy(x => x.Number))
+                    .Include(r => r.HomeIngredients.OrderBy(x => x.Number))
+                    .Include(r => r.Steps.OrderBy(x => x.Number))
                     .Include(r => r.Comments)
                     .Include(r => r.Tags)
                     .FirstAsync(r => r.ID == id);
@@ -144,7 +145,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRecipe(int id, [FromBody] string jsonStrChanges)
         {
-            var changes = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStrChanges);
+            var changes = JsonConvert.DeserializeObject<Changes>(jsonStrChanges);
 
             var recipe = await _context.Recipes
                     .Include(r => r.Ingredients)
@@ -160,22 +161,44 @@ namespace API.Controllers
             _context.Entry(recipe).State = EntityState.Modified;
 
             // do stuff here
+            if (changes.Title != null) recipe.Title = changes.Title.Data;
+            if (changes.TimeToMake != null) recipe.TimeToMake = changes.TimeToMake.Data;
+            if (changes.ForHowMany != null) recipe.ForHowMany = changes.ForHowMany.Data;
+            if (changes.Ingredients != null)
+            {
+                foreach (var item in changes.Ingredients)
+                {
+                    ChangedItem x = JsonConvert.DeserializeObject<ChangedItem>(item.ToString());
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecipeExists(id))
-                {
-                    return NotFound();
+                    if (x.Id == null && x.Number == null && x.Text == null)
+                    {
+                        ChangedItemObj<NormalItem> u = JsonConvert.DeserializeObject<ChangedItemObj<NormalItem>>(item.ToString());
+
+                        if (u == null) throw new Exception("Something went wrong");
+
+                        if (u.Type == "created") // OK
+                            recipe.Ingredients.Add(new Ingredient { ID = 0, Number = u.Data.Number, Text = u.Data.Text });
+                        if (u.Type == "updated") // ?
+                        {/*recipe.Ingredients.Find(i => i.) */}
+                        if (u.Type == "deleted") // OK
+                            recipe.Ingredients.RemoveAt(recipe.Ingredients.FindIndex(i => i.ID == u.Data.Id));
+                    }
+                    else
+                    {
+                        // do things with the big boy
+                        if (x.Id.Type == "unchanged" && x.Number.Type == "unchanged" && x.Text.Type == "updated")
+                            recipe.Ingredients.Find(i => i.ID == x.Id.Data && i.Number == x.Number.Data).Text = x.Text.Data;
+                    }
                 }
-                else
-                {
-                    throw;
-                }
             }
+            if (changes.HomeIngredients != null)
+            {
+            }
+            if (changes.Steps != null)
+            {
+            }
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -226,7 +249,7 @@ namespace API.Controllers
 
         // PUT: api/Recipes/5/favorite
         [HttpPatch("{id}/favorite")]
-        public async Task<IActionResult> PatchFavorite(int id, bool favorite)
+        public async Task<IActionResult> PatchFavorite(int id, [FromBody] bool favorite)
         {
             var recipe = await _context.Recipes.FindAsync(id);
 
@@ -256,7 +279,7 @@ namespace API.Controllers
 
         // PUT: api/Recipes/5/rating
         [HttpPatch("{id}/rating")]
-        public async Task<IActionResult> PatchRating(int id, int rating)
+        public async Task<IActionResult> PatchRating(int id, [FromBody] int rating)
         {
             var recipe = await _context.Recipes.FindAsync(id);
 

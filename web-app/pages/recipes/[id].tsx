@@ -120,6 +120,8 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
     title,
   } = recipe;
 
+  //console.log(recipe);
+
   const [openEditText, setOpenEditText] = useState(false);
   // const [bgImg] = useState(
   //   backgroundImagesList[
@@ -271,9 +273,17 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
         }
       }
 
-      console.log({ changes });
       console.log('send to api');
+
       const res = await EditRecipe(id, changes);
+      console.log(res);
+
+      if (res.success) {
+        dispatch({
+          type: ACTION_ENUM.EDIT_MODE,
+          editMode: false,
+        });
+      }
     },
   });
 
@@ -395,7 +405,7 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                     onChange={(e) => formik.setFieldValue('title', e.target.value)}
                   />
                 ) : (
-                  <Typography variant="h4">{title}</Typography>
+                  <Typography variant="h4">{formik.values.title}</Typography>
                 )}
 
                 <div className={styles.icons}>
@@ -421,14 +431,14 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                       />
                     ) : (
                       <Typography className={styles.textRightToIcon} variant="body1">
-                        {forHowMany}
+                        {formik.values.forHowMany}
                       </Typography>
                     )}
                   </div>
                   <div className={styles.iconText}>
                     <Icon
                       icon="AlarmIcon"
-                      customColor={clockMap.get(timeToMake)?.color}
+                      customColor={clockMap.get(formik.values.timeToMake)?.color}
                     />
                     {editMode ? (
                       <EditLength
@@ -441,7 +451,7 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                       />
                     ) : (
                       <Typography className={styles.textRightToIcon} variant="body1">
-                        {clockMap.get(timeToMake)?.text}
+                        {clockMap.get(formik.values.timeToMake)?.text}
                       </Typography>
                     )}
                   </div>

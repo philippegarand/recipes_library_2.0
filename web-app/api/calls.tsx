@@ -77,6 +77,7 @@ export const EditRating = async (
   id: number,
   rating: number,
 ): Promise<IApiRes<any>> => {
+  console.log(rating);
   return await API('PATCH', `Recipes/${id}/rating`, JSON.stringify(rating));
 };
 
@@ -90,9 +91,11 @@ export const AddComment = async (
 // TODO: to test
 export const EditRecipe = async (
   recipeId: number,
-  changes: IRecipeChanges,
+  changes: any, //IRecipeChanges,
 ): Promise<IApiRes<any>> => {
-  return await API('PUT', `Recipes/${recipeId}`, JSON.stringify(changes));
+  let jsonStr = `"${JSON.stringify(changes).replace(/"/g, `\\"`)}"`;
+  console.log(jsonStr);
+  return await API('PUT', `Recipes/${recipeId}`, jsonStr);
 };
 
 // --[TagsController]--------------------------------------------------------------
