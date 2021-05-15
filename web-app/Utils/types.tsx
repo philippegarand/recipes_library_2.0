@@ -1,9 +1,4 @@
-import {
-  DIFF_VALUE,
-  FOR_HOW_MANY_ENUM,
-  RECIPE_LENGHT_ENUM,
-  RECIPE_TYPE_ENUM,
-} from './enums';
+import { FOR_HOW_MANY_ENUM, RECIPE_LENGHT_ENUM, RECIPE_TYPE_ENUM } from './enums';
 
 export interface ITag {
   id?: number;
@@ -58,35 +53,14 @@ export interface IRecipesQuery {
   //filterBy: string;
 }
 
-type normalItem = {
-  id: number;
-  number: number;
-  text: string;
-};
-
-type changedItem = {
-  id: changedItemObj<number>;
-  number: changedItemObj<number>;
-  text: changedItemObj<string>;
-};
-
-type changedTag = {
-  id: changedItemObj<number>;
-  text: changedItemObj<string>;
-};
-
-type changedItemObj<T> = {
-  type: DIFF_VALUE;
-  data: T;
-};
 export interface IRecipeChanges {
   title?: string;
   forHowMany?: FOR_HOW_MANY_ENUM;
   timeToMake?: RECIPE_LENGHT_ENUM;
-  tags?: changedItemObj<ITag>[] | changedTag[];
-  ingredients?: changedItemObj<normalItem>[] | changedItem[];
-  homeIngredients?: changedItemObj<normalItem>[] | changedItem[];
-  steps?: changedItemObj<normalItem>[] | changedItem[];
+  tags: ITag[];
+  ingredients: IIngredient[];
+  homeIngredients: IHomeIngredient[];
+  steps: IStep[];
 }
 
 export interface IRecipeThumnail {

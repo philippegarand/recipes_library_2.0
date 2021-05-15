@@ -5,7 +5,6 @@ import {
   IRecipe,
   IRecipeChanges,
   IRecipesQuery,
-  IRecipeThumnail,
   ITag,
 } from '../Utils/types';
 
@@ -55,7 +54,6 @@ export const GetRecipesQuery = async (
   return await API('POST', 'Recipes/thumbnails', query);
 };
 
-// TODO: to test
 export const GetRecipe = async (id: string): Promise<IApiRes<IRecipe>> => {
   return await API('GET', `Recipes/${id}`);
 };
@@ -77,7 +75,6 @@ export const EditRating = async (
   id: number,
   rating: number,
 ): Promise<IApiRes<any>> => {
-  console.log(rating);
   return await API('PATCH', `Recipes/${id}/rating`, JSON.stringify(rating));
 };
 
@@ -88,13 +85,11 @@ export const AddComment = async (
   return await API('POST', `Recipes/${recipeId}/comment`, JSON.stringify(comment));
 };
 
-// TODO: to test
 export const EditRecipe = async (
   recipeId: number,
-  changes: any, //IRecipeChanges,
+  changes: IRecipeChanges,
 ): Promise<IApiRes<any>> => {
   let jsonStr = `"${JSON.stringify(changes).replace(/"/g, `\\"`)}"`;
-  console.log(jsonStr);
   return await API('PUT', `Recipes/${recipeId}`, jsonStr);
 };
 

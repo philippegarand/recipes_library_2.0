@@ -380,7 +380,6 @@ export default function importRecipe() {
     };
 
     const saveToFormik = (infos) => {
-      console.log({ infos });
       formik.setFieldValue('title', infos.title);
       formik.setFieldValue('ingredients', infos.ingredients);
       formik.setFieldValue('homeIngredients', infos.homeIngredients);

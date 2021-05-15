@@ -20,7 +20,8 @@ services:
       PICTURES_SOURCE: uploads
     volumes:
       # TODO: edit volume to fit with vm linux
-      - C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/recipesPictures:/app/uploads
+      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures:/app/uploads
+      #- C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/recipesPictures:/app/uploads
 
   database:
     image: mysql:8

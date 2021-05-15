@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { EditFavorite, EditRating, EditRecipe, GetRecipe } from '../../api/calls';
 import {
@@ -33,7 +33,6 @@ import {
 } from '../../components/EditRecipeInfos';
 import useMediaQuery from '../../Utils/CustomHooks/mediaQuery';
 import {
-  DIFF_VALUE,
   FOR_HOW_MANY_ENUM,
   RECIPE_LENGHT_ENUM,
   SEVERITY_ENUM,
@@ -41,8 +40,8 @@ import {
 import { useFormik } from 'formik';
 
 import styles from '../../styles/Recipe.module.css';
-import { deepDiffMapper } from '../../Utils/functions';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -51,11 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       recipe: res.success ? res.data : undefined,
-      bgImg: res.success
-        ? backgroundImagesList[
-            Math.floor(Math.random() * backgroundImagesList.length)
-          ]
-        : 0,
+      bgImg: '/images/wood_bg.jpg',
     },
   };
 };
@@ -71,13 +66,6 @@ const clockMap = new Map([
   ['Moyen', { text: 'Moyenne', color: 'orange' }],
   ['Long', { text: 'Longue', color: 'red' }],
 ]);
-const backgroundImagesList = [
-  '/images/triangles_bg.jpg',
-  '/images/wood_bg.jpg',
-  '/images/hex_bg.jpg',
-  '/images/diamond_bg.jpeg',
-  '/images/lines_bg.jpg',
-];
 
 interface FormValues {
   title: string;
@@ -94,18 +82,9 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const isMobile = useMediaQuery(600);
+  const router = useRouter();
 
   const [recipe, setRecipe] = useState<IRecipe>(props.recipe);
-  const [initialState, setInitialState] = useState<FormValues>({
-    title: recipe.title,
-    forHowMany: recipe.forHowMany,
-    timeToMake: recipe.timeToMake,
-    tags: recipe.tags,
-    ingredients: recipe.ingredients,
-    homeIngredients: recipe.homeIngredients,
-    steps: recipe.steps,
-  });
-
   const {
     id,
     homeIngredients,
@@ -120,14 +99,11 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
     title,
   } = recipe;
 
-  //console.log(recipe);
+  useEffect(() => {
+    setRecipe(props.recipe);
+  }, [props.recipe]);
 
   const [openEditText, setOpenEditText] = useState(false);
-  // const [bgImg] = useState(
-  //   backgroundImagesList[
-  //     Math.floor(Math.random() * backgroundImagesList.length)
-  //   ],
-  // );
 
   const changeFavorite = async () => {
     const res = await EditFavorite(id, !favorite);
@@ -169,119 +145,36 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
       homeIngredients,
       steps,
     },
-    onSubmit: async (values) => {
-      let diffs = deepDiffMapper.map(initialState, values);
+    onSubmit: async (values: FormValues) => {
+      let changes: IRecipeChanges = {
+        tags: values.tags,
+        ingredients: values.ingredients,
+        homeIngredients: values.homeIngredients,
+        steps: values.steps,
+      };
 
-      if (diffs['title'].type === DIFF_VALUE.VALUE_UNCHANGED) delete diffs['title'];
-      if (diffs['forHowMany'].type === DIFF_VALUE.VALUE_UNCHANGED)
-        delete diffs['forHowMany'];
-      if (diffs['timeToMake'].type === DIFF_VALUE.VALUE_UNCHANGED)
-        delete diffs['timeToMake'];
-
-      for (var i = Object.keys(diffs['ingredients']).length - 1; i >= 0; i--) {
-        const item = diffs['ingredients'][i];
-        if (
-          (item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['number']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED) ||
-          (item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['number']?.type === DIFF_VALUE.VALUE_UPDATED &&
-            item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED)
-        )
-          delete diffs['ingredients'][i];
-      }
-      if (!Object.keys(diffs['ingredients']).length) delete diffs['ingredients'];
-
-      for (var i = Object.keys(diffs['homeIngredients']).length - 1; i >= 0; i--) {
-        const item = diffs['homeIngredients'][i];
-        if (
-          (item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['number']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED) ||
-          (item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['number']?.type === DIFF_VALUE.VALUE_UPDATED &&
-            item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED)
-        )
-          delete diffs['homeIngredients'][i];
-      }
-      if (!Object.keys(diffs['homeIngredients']).length)
-        delete diffs['homeIngredients'];
-
-      for (var i = Object.keys(diffs['steps']).length - 1; i >= 0; i--) {
-        const item = diffs['steps'][i];
-        if (
-          (item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['number']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED) ||
-          (item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-            item['number']?.type === DIFF_VALUE.VALUE_UPDATED &&
-            item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED)
-        )
-          delete diffs['steps'][i];
-      }
-      if (!Object.keys(diffs['steps']).length) delete diffs['steps'];
-
-      for (var i = Object.keys(diffs['tags']).length - 1; i >= 0; i--) {
-        const item = diffs['tags'][i];
-        if (
-          item['id']?.type === DIFF_VALUE.VALUE_UNCHANGED &&
-          item['text']?.type === DIFF_VALUE.VALUE_UNCHANGED
-        )
-          delete diffs['tags'][i];
-      }
-      if (!Object.keys(diffs['tags']).length) delete diffs['tags'];
-
-      if (!Object.keys(diffs).length) {
-        dispatch({
-          type: ACTION_ENUM.SNACKBAR,
-          severity: SEVERITY_ENUM.INFO,
-          message: 'Aucun changements à sauvegarder',
-        });
-        return;
-      }
-
-      let changes: IRecipeChanges = diffs;
-      for (const [key, value] of Object.entries(diffs)) {
-        //if (key === 'forHowMany')
-        if (key === 'homeIngredients') {
-          let arr = [];
-          for (const [k, v] of Object.entries(value)) {
-            arr.push(v);
-          }
-          changes['homeIngredients'] = arr;
-        }
-        if (key === 'ingredients') {
-          let arr = [];
-          for (const [k, v] of Object.entries(value)) {
-            arr.push(v);
-          }
-          changes['ingredients'] = arr;
-        }
-        if (key === 'steps') {
-          let arr = [];
-          for (const [k, v] of Object.entries(value)) {
-            arr.push(v);
-          }
-          changes['steps'] = arr;
-        }
-        if (key === 'tags') {
-          let arr = [];
-          for (const [k, v] of Object.entries(value)) {
-            arr.push(v);
-          }
-          changes['tags'] = arr;
-        }
-      }
-
-      console.log('send to api');
+      if (values.title != title) changes['title'] = values.title;
+      if (values.forHowMany != forHowMany) changes['forHowMany'] = values.forHowMany;
+      if (values.timeToMake != timeToMake) changes['timeToMake'] = values.timeToMake;
 
       const res = await EditRecipe(id, changes);
-      console.log(res);
 
       if (res.success) {
         dispatch({
           type: ACTION_ENUM.EDIT_MODE,
           editMode: false,
+        });
+        dispatch({
+          type: ACTION_ENUM.SNACKBAR,
+          severity: SEVERITY_ENUM.SUCCESS,
+          message: 'Changements sauvegardés!',
+        });
+        router.replace(router.asPath); // refresh props
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACKBAR,
+          severity: SEVERITY_ENUM.ERROR,
+          message: 'Une erreur est survenue',
         });
       }
     },
@@ -289,10 +182,6 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
 
   const handleEditSave = () => {
     formik.handleSubmit();
-    // dispatch({
-    //   type: ACTION_ENUM.EDIT_MODE,
-    //   editMode: false,
-    // });
   };
   const handleEditCancel = () => {
     formik.setFieldValue('title', title);
@@ -460,7 +349,7 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                       {editMode ? (
                         <EditTags formik={formik} fullWidth />
                       ) : (
-                        tags?.map((tag) => (
+                        formik.values.tags?.map((tag) => (
                           <Chip
                             key={tag.id}
                             label={tag.text}
@@ -476,7 +365,6 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
             </div>
           </Card>
 
-          {/* HERE */}
           <div className={styles.ingredients}>
             {editMode ? (
               <div className={styles.sectionTitle}>
@@ -520,7 +408,6 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
             </List>
           </div>
 
-          {/* HERE */}
           <div className={styles.steps}>
             {editMode ? (
               <div className={styles.sectionTitle}>

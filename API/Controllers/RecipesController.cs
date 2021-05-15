@@ -151,51 +151,120 @@ namespace API.Controllers
                     .Include(r => r.Ingredients)
                     .Include(r => r.HomeIngredients)
                     .Include(r => r.Steps)
-                    .Include(r => r.Comments)
                     .Include(r => r.Tags)
                     .FirstAsync(r => r.ID == id);
 
             if (recipe == null)
                 return NotFound();
 
-            _context.Entry(recipe).State = EntityState.Modified;
+            if (!string.IsNullOrEmpty(changes.Title)) recipe.Title = changes.Title;
+            if (!string.IsNullOrEmpty(changes.TimeToMake)) recipe.TimeToMake = changes.TimeToMake;
+            if (!string.IsNullOrEmpty(changes.ForHowMany)) recipe.ForHowMany = changes.ForHowMany;
 
-            // do stuff here
-            if (changes.Title != null) recipe.Title = changes.Title.Data;
-            if (changes.TimeToMake != null) recipe.TimeToMake = changes.TimeToMake.Data;
-            if (changes.ForHowMany != null) recipe.ForHowMany = changes.ForHowMany.Data;
             if (changes.Ingredients != null)
             {
-                foreach (var item in changes.Ingredients)
+                // Update existing entries or add new
+                foreach (var ing in changes.Ingredients)
                 {
-                    ChangedItem x = JsonConvert.DeserializeObject<ChangedItem>(item.ToString());
+                    var existingIngredients = recipe.Ingredients.FirstOrDefault(i => i.ID == ing.ID);
 
-                    if (x.Id == null && x.Number == null && x.Text == null)
+                    if (existingIngredients == null)
                     {
-                        ChangedItemObj<NormalItem> u = JsonConvert.DeserializeObject<ChangedItemObj<NormalItem>>(item.ToString());
-
-                        if (u == null) throw new Exception("Something went wrong");
-
-                        if (u.Type == "created") // OK
-                            recipe.Ingredients.Add(new Ingredient { ID = 0, Number = u.Data.Number, Text = u.Data.Text });
-                        if (u.Type == "updated") // ?
-                        {/*recipe.Ingredients.Find(i => i.) */}
-                        if (u.Type == "deleted") // OK
-                            recipe.Ingredients.RemoveAt(recipe.Ingredients.FindIndex(i => i.ID == u.Data.Id));
+                        recipe.Ingredients.Add(ing);
+                        _context.SaveChanges(); // have to save otherwise Id = 0 is overrided to last Add
+                    } else
+                    {
+                        _context.Entry(existingIngredients).CurrentValues.SetValues(ing);
                     }
-                    else
+                }
+
+                // Delete entries not present
+                foreach (var ing in recipe.Ingredients)
+                {
+                    if (!changes.Ingredients.Any(x => x.ID == ing.ID))
                     {
-                        // do things with the big boy
-                        if (x.Id.Type == "unchanged" && x.Number.Type == "unchanged" && x.Text.Type == "updated")
-                            recipe.Ingredients.Find(i => i.ID == x.Id.Data && i.Number == x.Number.Data).Text = x.Text.Data;
+                        _context.Remove(ing);
                     }
                 }
             }
+
             if (changes.HomeIngredients != null)
             {
+                // Update existing entries or add new
+                foreach (var hIng in changes.HomeIngredients)
+                {
+                    var existingHomneIngredients = recipe.HomeIngredients.FirstOrDefault(i => i.ID == hIng.ID);
+
+                    if (existingHomneIngredients == null)
+                    {
+                        recipe.HomeIngredients.Add(hIng);
+                        _context.SaveChanges(); // have to save otherwise Id = 0 is overrided to last Add
+                    }
+                    else
+                    {
+                        _context.Entry(existingHomneIngredients).CurrentValues.SetValues(hIng);
+                    }
+
+                }
+
+                // Delete entries not present
+                foreach (var hIng in recipe.HomeIngredients)
+                {
+                    if (!changes.HomeIngredients.Any(x => x.ID == hIng.ID))
+                    {
+                        _context.Remove(hIng);
+                    }
+                }
             }
+
             if (changes.Steps != null)
             {
+                // Update existing entries or add new
+                foreach (var step in changes.Steps)
+                {
+                    var existingStep = recipe.Steps.FirstOrDefault(i => i.ID == step.ID);
+
+                    if (existingStep == null)
+                    {
+                        recipe.Steps.Add(step);
+                        _context.SaveChanges(); // have to save otherwise Id = 0 is overrided to last Add
+                    }
+                    else
+                    {
+                        _context.Entry(existingStep).CurrentValues.SetValues(step);
+                    }
+                }
+
+                // Delete entries not present
+                foreach (var step in recipe.Steps)
+                {
+                    if (!changes.Steps.Any(x => x.ID == step.ID))
+                    {
+                        _context.Remove(step);
+                    }
+                }
+            }
+
+            if (changes.Tags != null)
+            {
+                // Add new tags that are not in recipe
+                foreach (var tag in changes.Tags)
+                {
+                    if (recipe.Tags.FirstOrDefault(i => i.ID == tag.ID) == null)
+                    {
+                        recipe.Tags.Add(tag);
+                    }
+                }
+
+                // Remove recipe tags that are not present in changes
+                var currenttags = recipe.Tags.ToList();
+                for (int i = currenttags.Count - 1; i >= 0; i--)
+                {
+                    if (!changes.Tags.Any(x => x.ID == currenttags[i].ID))
+                    {
+                        recipe.Tags.Remove(currenttags[i]);
+                    }
+                }
             }
 
             await _context.SaveChangesAsync();

@@ -73,8 +73,6 @@ export default function Comments(props: IProps) {
     onSubmit: async (values: FormValue) => {
       const res = await AddComment(recipeId, values.comment);
 
-      console.log(res);
-
       if (!res.success) {
         dispatch({
           type: ACTION_ENUM.SNACKBAR,
