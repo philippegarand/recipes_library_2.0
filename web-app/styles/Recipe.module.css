@@ -1,8 +1,4 @@
 /*BOTH*/
-.topLeft {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
 .imageContainer {
   top: 50%;
   position: relative;
@@ -34,9 +30,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  position: absolute !important;
+  position: fixed !important;
   bottom: 1rem;
-  /* bottom: 50%; */
   right: 1rem;
   z-index: 1000;
 }
@@ -51,6 +46,17 @@ body .divider {
 
 body .textRightToIcon {
   margin-left: 0.25rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  gap: 6px;
+}
+
+.editTags {
+  margin-top: 0.5rem;
 }
 
 /*MOBILE*/
@@ -76,11 +82,12 @@ body .textRightToIcon {
 .card {
   grid-area: top;
   display: flex;
+  flex-direction: column;
   overflow: visible !important;
 }
 
 .img {
-  max-width: 175px;
+  max-width: 100%;
   display: block;
 }
 
@@ -121,7 +128,7 @@ body .textRightToIcon {
 }
 
 .divTitle {
-  padding: 0.25rem 1rem 0 1rem;
+  padding: 0.25rem 1rem 0.25rem 1rem;
 }
 
 .rating {
@@ -136,6 +143,7 @@ body .textRightToIcon {
 .comments {
   grid-area: comments;
   width: 100%;
+  padding-bottom: 0.5rem;
 }
 
 /*TABLETS AND DESKTOP*/
@@ -156,6 +164,7 @@ body .textRightToIcon {
 
   .card {
     width: calc(100% - 1rem);
+    flex-direction: row;
   }
 
   .img {
@@ -177,10 +186,7 @@ body .textRightToIcon {
   }
 
   .tags {
-    display: flex;
-    flex-wrap: wrap;
     margin-top: 1rem;
-    gap: 6px;
   }
 
   .steps {

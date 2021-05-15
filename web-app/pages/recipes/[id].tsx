@@ -254,8 +254,13 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
           </div>
         )}
         <div className={styles.recipe}>
-          <Card className={styles.card}>
-            <div className={styles.topLeft}>
+          <Card
+            className={styles.card}
+            style={{
+              backgroundImage: `url(${props.bgImg})`,
+            }}
+          >
+            <div>
               <div className={styles.imageContainer}>
                 <img
                   className={styles.img}
@@ -274,18 +279,13 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                   <Icon
                     icon="ShareIcon"
                     customColor="white"
-                    onClick={() => console.log('share')}
+                    //onClick={() => console.log('share')}
                     fontSize={!isMobile ? 'large' : 'small'}
                   />
                 </div>
               </div>
             </div>
-            <div
-              style={{
-                backgroundImage: `url(${props.bgImg})`,
-                width: '100%',
-              }}
-            >
+            <div>
               <div className={styles.divTitle}>
                 {editMode ? (
                   <TextField
@@ -294,7 +294,9 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                     onChange={(e) => formik.setFieldValue('title', e.target.value)}
                   />
                 ) : (
-                  <Typography variant="h4">{formik.values.title}</Typography>
+                  <Typography variant={isMobile ? 'h6' : 'h4'}>
+                    {formik.values.title}
+                  </Typography>
                 )}
 
                 <div className={styles.icons}>
@@ -344,22 +346,24 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                       </Typography>
                     )}
                   </div>
-                  {!isMobile && (
-                    <div className={styles.tags}>
-                      {editMode ? (
-                        <EditTags formik={formik} fullWidth />
-                      ) : (
-                        formik.values.tags?.map((tag) => (
-                          <Chip
-                            key={tag.id}
-                            label={tag.text}
-                            color="primary"
-                            style={{ color: 'white' }}
-                          />
-                        ))
-                      )}
-                    </div>
-                  )}
+                  <div className={styles.tags}>
+                    {editMode ? (
+                      <EditTags
+                        className={styles.editTags}
+                        formik={formik}
+                        fullWidth
+                      />
+                    ) : (
+                      formik.values.tags?.map((tag) => (
+                        <Chip
+                          key={tag.id}
+                          label={tag.text}
+                          color="primary"
+                          style={{ color: 'white' }}
+                        />
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

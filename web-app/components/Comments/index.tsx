@@ -121,7 +121,7 @@ export default function Comments(props: IProps) {
         <IconButton
           className={styles.btnAdd}
           icon="AddCircleIcon"
-          style={{ color: '#353535' }}
+          style={{ color: '#3CC47C' }}
         />
       </div>
       <Divider />
@@ -159,10 +159,7 @@ export default function Comments(props: IProps) {
         )}
         {comments?.map((comment) => (
           <div key={comment.id}>
-            <ListItem
-              classes={{ root: classes.item }}
-              alignItems="flex-start"
-            >
+            <ListItem classes={{ root: classes.item }} alignItems="flex-start">
               <ListItemAvatar className={styles.listItemAvatar}>
                 <Avatar className={styles.avatar} variant="rounded" />
               </ListItemAvatar>

@@ -155,7 +155,6 @@ export default function importRecipe() {
         comments: comments ? [{ text: comments }] : [],
       };
 
-      console.log({ recipe });
       const res = await AddRecipe(recipe);
 
       if (!res.success) {
