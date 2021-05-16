@@ -6,10 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["API.csproj", "."]
-COPY ["../EFDataAccessLibrary/EFDataAccessLibrary.csproj", "../EFDataAccessLibrary/"]
-RUN dotnet restore "./API.csproj"
-COPY . .
+COPY ["./API/API.csproj", "."]
+COPY ["./EFDataAccessLibrary/EFDataAccessLibrary.csproj", "."]
+RUN dotnet restore "API.csproj"
+COPY "./API" .
+COPY "./EFDataAccessLibrary" .
 WORKDIR "/src/."
 RUN dotnet build "API.csproj" -c Release -o /app/build
 

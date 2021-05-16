@@ -49,7 +49,7 @@ namespace API
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins("http://localhost:3000", "http://192.168.0.87:3000")
+                    builder => builder.WithOrigins("http://localhost:3001", "http://192.168.0.87:3001")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
             });

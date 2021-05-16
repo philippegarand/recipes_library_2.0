@@ -27,8 +27,8 @@ interface IProps {
   selectionStep: number;
   ocrDone: boolean;
   editDone: boolean;
-  handleNext: Function;
-  handleAddRecipe: Function;
+  handleNext: React.MouseEventHandler<HTMLButtonElement>;
+  handleAddRecipe: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const steps = [
@@ -41,13 +41,7 @@ const steps = [
 ];
 
 export default function BottomPanel(props: IProps) {
-  const {
-    selectionStep,
-    handleNext,
-    ocrDone,
-    editDone,
-    handleAddRecipe,
-  } = props;
+  const { selectionStep, handleNext, ocrDone, editDone, handleAddRecipe } = props;
   const classes = useStyles();
 
   return (
@@ -65,10 +59,7 @@ export default function BottomPanel(props: IProps) {
 
       {!ocrDone && selectionStep > 3 ? (
         <div className={styles.ocrProgress}>
-          <CircularProgress
-            className={styles.loadingSpinner}
-            size="24px"
-          />
+          <CircularProgress className={styles.loadingSpinner} size="24px" />
           <Typography
             variant="caption"
             style={{ textAlign: 'center', marginLeft: 8 }}

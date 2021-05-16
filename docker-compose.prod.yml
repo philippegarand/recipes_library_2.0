@@ -1,14 +1,26 @@
 version: "3"
+
 services:
+  web-app:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3001:3001
+    depends_on:
+      - api
+
   api:
     build:
-      context: ./API
-      dockerfile: Dockerfile
-    depends_on:
-      - database
+      context: .
+      dockerfile: ./API/Dockerfile.prod
     ports:
       - 4001:80
+    depends_on:
+      - database
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
       DB_ADDR: database
       DB_PASS: docker
       DB_USER: root
@@ -16,10 +28,9 @@ services:
       # TODO: change this folder path
       PICTURE_SOURCE: uploads
     volumes:
-      # TODO: edit volume to fit with pi linux
-      - C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/receiveImageTest:/app/uploads
-      - C:\Users\Phil\Documents\GitHub\recipes_library_2.0\testPictures:/app/testPictures
-    #restart: always
+      # TODO: edit volume to fit with alpine vm
+      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures:/app/uploads
+    restart: on-failure
 
   database:
     image: mysql:8

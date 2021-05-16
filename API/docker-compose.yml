@@ -9,7 +9,7 @@ services:
     depends_on:
       - database
     ports:
-      - 1337:80
+      - 4001:80
     environment:
       IS_DOCKER: "true"
       DB_ADDR: database
