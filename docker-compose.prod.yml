@@ -18,9 +18,20 @@ services:
       - 4001:80
     depends_on:
       - database
+    command:
+      [
+        "./wait-for-it.sh",
+        "database:3306",
+        "-t",
+        "30",
+        "--",
+        "dotnet",
+        "API.dll",
+      ]
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
+      IS_DOCKER: oui
       DB_ADDR: database
       DB_PASS: docker
       DB_USER: root
@@ -30,7 +41,6 @@ services:
     volumes:
       # TODO: edit volume to fit with alpine vm
       - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures:/app/uploads
-    restart: on-failure
 
   database:
     image: mysql:8
@@ -41,4 +51,3 @@ services:
       - 3306:3306
     volumes:
       - ./DB/data:/var/lib/mysql
-    #restart: always
