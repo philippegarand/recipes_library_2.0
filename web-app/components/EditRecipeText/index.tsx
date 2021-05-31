@@ -12,6 +12,9 @@ import {
 import Draggable from 'react-draggable';
 import { useFormik } from 'formik';
 import { ListReorder, Button } from '..';
+import { useDispatch } from 'react-redux';
+import { SEVERITY_ENUM } from '../../Utils/enums';
+import { ACTION_ENUM } from '../../Utils/Store';
 
 import styles from './EditRecipeText.module.css';
 
@@ -57,6 +60,8 @@ export default function EditRecipeText(props: IProps) {
     onClose,
     onEditDone,
   } = props;
+
+  const dispatch = useDispatch();
 
   const validate = (values: FormValue) => {
     const { title, ingredients, homeIngredients, steps } = values;
@@ -106,6 +111,11 @@ export default function EditRecipeText(props: IProps) {
       errors.homeIngredients.some((x) => x.length > 0) ||
       errors.steps.some((x) => x.length > 0)
     ) {
+      dispatch({
+        type: ACTION_ENUM.SNACKBAR,
+        severity: SEVERITY_ENUM.WARNING,
+        message: 'Certains champs ont des erreurs',
+      });
       return errors;
     }
 

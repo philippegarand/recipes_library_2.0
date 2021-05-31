@@ -48,14 +48,13 @@ namespace API
 
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins("http://localhost:3001", "http://192.168.0.87:3001")
-                .AllowAnyHeader()
-                .AllowAnyMethod());
+                options.AddPolicy("CorsApi", builder => 
+                    builder.WithOrigins(Environment.GetEnvironmentVariable("WEB_APP_ADDR"))
+                           .AllowAnyHeader()
+                           .AllowAnyMethod());
             });
 
             services.AddSwaggerGen();
-
             services.AddControllers().AddNewtonsoftJson();
         }
 

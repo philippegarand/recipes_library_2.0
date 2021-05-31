@@ -53,7 +53,8 @@ namespace EFDataAccessLibrary.DataAccess
                 new Tag { ID = 9, Text = "Épicé" },
                 new Tag { ID = 10, Text = "Grecque" },
                 new Tag { ID = 11, Text = "Mexicain" },
-                new Tag { ID = 12, Text = "Italien" }
+                new Tag { ID = 12, Text = "Italien" },
+                new Tag { ID = 13, Text = "Asiatique" }
             );
         }
     }

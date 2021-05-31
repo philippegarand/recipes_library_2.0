@@ -2,6 +2,7 @@ version: "3"
 
 services:
   web-app:
+    container_name: webapp_prod
     build:
       context: ./web-app
       dockerfile: Dockerfile.prod
@@ -11,6 +12,7 @@ services:
       - api
 
   api:
+    container_name: api_prod
     build:
       context: .
       dockerfile: ./API/Dockerfile.prod
@@ -31,23 +33,25 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
+      WEB_APP_ADDR: http://192.168.0.123:3001
       IS_DOCKER: oui
       DB_ADDR: database
       DB_PASS: docker
       DB_USER: root
-      DB_NAME: recipes_library
+      DB_NAME: RECIPES_DB_PROD
       # TODO: change this folder path
-      PICTURE_SOURCE: uploads
+      PICTURES_SOURCE: /app/uploads
     volumes:
-      # TODO: edit volume to fit with alpine vm
-      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures:/app/uploads
+      # TODO: edit volume to fit
+      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures\prod:/app/uploads
 
   database:
+    container_name: database_prod
     image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: docker
-      MYSQL_DATABASE: RECIPES_DB
+      MYSQL_DATABASE: RECIPES_DB_PROD
     ports:
       - 3306:3306
     volumes:
-      - ./DB/data:/var/lib/mysql
+      - ./DB/prod/data:/var/lib/mysql

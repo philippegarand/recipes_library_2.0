@@ -8,7 +8,7 @@ import {
   ITag,
 } from '../Utils/types';
 
-const API_BASE_URL = 'http://192.168.0.87:4001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api/`,

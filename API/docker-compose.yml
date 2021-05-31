@@ -2,6 +2,7 @@ version: "3.4"
 
 services:
   api:
+    container_name: api_dev
     image: ${DOCKER_REGISTRY-}api
     build:
       context: .
@@ -11,24 +12,23 @@ services:
     ports:
       - 4001:80
     environment:
-      IS_DOCKER: "true"
+      WEB_APP_ADDR: http://192.168.0.123:3000
+      IS_DOCKER: oui
       DB_ADDR: database
       DB_PASS: docker
       DB_USER: root
-      DB_NAME: RECIPES_DB
-      # TODO: change this folder path
-      PICTURES_SOURCE: uploads
+      DB_NAME: RECIPES_DB_DEV
+      PICTURES_SOURCE: /app/uploads
     volumes:
-      # TODO: edit volume to fit with vm linux
-      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures:/app/uploads
-      #- C:/Users/Phil/Documents/GitHub/recipes_library_2.0/API/recipesPictures:/app/uploads
+      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures\dev:/app/uploads
 
   database:
+    container_name: database_dev
     image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: docker
-      MYSQL_DATABASE: RECIPES_DB
+      MYSQL_DATABASE: RECIPES_DB_DEV
     ports:
       - 3306:3306
     volumes:
-      - ../DB/data:/var/lib/mysql
+      - ../DB/dev/data:/var/lib/mysql
