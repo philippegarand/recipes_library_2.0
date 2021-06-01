@@ -1,13 +1,9 @@
 ﻿using Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EFDataAccessLibrary.Models
+namespace API.Classes.Dtos
 {
-    public class Changes
+    public class RecipeChangesDto
     {
         public string Title { get; set; }
         public string ForHowMany { get; set; } // 2-3 / 4-5

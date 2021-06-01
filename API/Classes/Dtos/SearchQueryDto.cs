@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Models
+namespace API.Classes.Dtos
 {
-    public class RecipeQuery
+    public class SearchQueryDto
     {
         public int PerPage { get; set; }
         public int Page { get; set; }

@@ -180,9 +180,14 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
     },
   });
 
+  const handleShare = () => {
+    //console.log("Share");
+  };
+
   const handleEditSave = () => {
     formik.handleSubmit();
   };
+
   const handleEditCancel = () => {
     formik.setFieldValue('title', title);
     formik.setFieldValue('forHowMany', forHowMany);
@@ -279,13 +284,13 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
                   <Icon
                     icon="ShareIcon"
                     customColor="white"
-                    //onClick={() => console.log('share')}
+                    onClick={handleShare}
                     fontSize={!isMobile ? 'large' : 'small'}
                   />
                 </div>
               </div>
             </div>
-            <div>
+            <div style={{ width: '100%' }}>
               <div className={styles.divTitle}>
                 {editMode ? (
                   <TextField

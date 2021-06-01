@@ -1,3 +1,4 @@
+# PRODUCTION COMPOSE
 version: "3"
 
 services:
@@ -33,17 +34,17 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
-      WEB_APP_ADDR: http://192.168.0.123:3001
+      # Put local machine ip
+      WEB_APP_ADDR: http://192.168.0.xxx:3001
       IS_DOCKER: oui
       DB_ADDR: database
       DB_PASS: docker
       DB_USER: root
       DB_NAME: RECIPES_DB_PROD
-      # TODO: change this folder path
       PICTURES_SOURCE: /app/uploads
     volumes:
-      # TODO: edit volume to fit
-      - C:\Users\phili\Documents\GitHub\recipes_library_2.0\API\recipesPictures\prod:/app/uploads
+      # Put location of the project
+      - C:\xxx\recipes_library_2.0\API\recipesPictures\prod:/app/uploads
 
   database:
     container_name: database_prod

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EFDataAccessLibrary.DataAccess;
 using Models;
+using API.Classes.Views;
 
 namespace API.Controllers
 {
@@ -52,7 +53,7 @@ namespace API.Controllers
                 _context.Tags.Add(newTag);
                 await _context.SaveChangesAsync();
 
-                return Created("Tag", new TagView { ID = newTag.ID, Text = newTag.Text});                
+                return StatusCode(StatusCodes.Status201Created, new TagView { ID = newTag.ID, Text = newTag.Text });           
             }
             catch (Exception e)
             {

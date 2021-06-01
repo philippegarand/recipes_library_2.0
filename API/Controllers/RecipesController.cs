@@ -9,7 +9,8 @@ using EFDataAccessLibrary.DataAccess;
 using Models;
 using API.Helpers;
 using Newtonsoft.Json;
-using EFDataAccessLibrary.Models;
+using API.Classes.Views;
+using API.Classes.Dtos;
 
 namespace API.Controllers
 {
@@ -24,12 +25,11 @@ namespace API.Controllers
             _context = context;
         }
 
-        // SEARCH QUERY CALL
-
-        // POST: api/Recipes (fake get, cause I need body...)
+        // TODO: Change to Get and use query params
+        // POST: api/Recipes       
         [HttpPost]
         [Route("thumbnails")]
-        public async Task<ActionResult<PaginatedListHelper<RecipeThumbnail>>> GetRecipesQuery([FromBody] RecipeQuery query)
+        public async Task<ActionResult<PaginatedListHelper<ThumbnailView>>> GetRecipesQuery([FromBody] SearchQueryDto query)
         {
             try
             {
@@ -38,8 +38,7 @@ namespace API.Controllers
                 if (!string.IsNullOrEmpty(query.NameLike))
                     recipes = recipes.Where(r => r.Title.Contains(query.NameLike));
 
-                // order by made client side to prevent api spam
-
+                // TODO: Quick sort here, not order by.
                 #region [FilterBy]
 
                 //switch (query.FilterBy)
@@ -74,7 +73,7 @@ namespace API.Controllers
                 if (query.TagsIds.Count > 0)
                     recipes = recipes.Where(r => r.Tags.Where(t => query.TagsIds.Contains(t.ID)).Distinct().Count() == query.TagsIds.Distinct().Count());
 
-                var items = recipes.AsNoTracking().Select(r => new RecipeThumbnail
+                var items = recipes.AsNoTracking().Select(r => new ThumbnailView
                 {
                     Id = r.ID,
                     Title = r.Title,
@@ -86,12 +85,12 @@ namespace API.Controllers
                     PictureData = PictureHelper.GetDataFromPicture(r.ID),
                 });
 
-                var res = await PaginatedListHelper<RecipeThumbnail>.CreateAsync(items, query.Page, query.PerPage);
+                var res = await PaginatedListHelper<ThumbnailView>.CreateAsync(items, query.Page, query.PerPage);
 
-                // tried to do async, but ForEach is not compatible... find solution later?
+                // tried to do async, but ForEach is not compatible...
                 //res.ForEach(async r => r.PictureData = await PictureHelper.GetDataFromPicture(r.Id));
 
-                return Ok(new RecipeThumbnails { Page = res.Page, TotalPages = res.TotalPages, Thumbnails = res });
+                return Ok(new ThumbnailsView { Page = res.Page, TotalPages = res.TotalPages, Thumbnails = res });
             }
             catch (Exception e)
             {
@@ -145,7 +144,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRecipe(int id, [FromBody] string jsonStrChanges)
         {
-            var changes = JsonConvert.DeserializeObject<Changes>(jsonStrChanges);
+            var changes = JsonConvert.DeserializeObject<RecipeChangesDto>(jsonStrChanges);
 
             var recipe = await _context.Recipes
                     .Include(r => r.Ingredients)

@@ -1,16 +1,11 @@
 using EFDataAccessLibrary.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API
 {
@@ -27,6 +22,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             string mySqlConnectionStr;
+            // Used for migrations in dev
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IS_DOCKER")))
             {
                 mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
@@ -79,6 +75,7 @@ namespace API
                 endpoints.MapControllers();
             });
 
+            // Autorun migrations
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
             var context = serviceScope.ServiceProvider.GetRequiredService<RecipesContext>();
             context.Database.Migrate();

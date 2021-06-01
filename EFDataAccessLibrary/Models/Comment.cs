@@ -4,12 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    public class CommentDTO
-    {
-        public int RecipeId { get; set; }
-        public string Text { get; set; }
-    }
-
     public class Comment
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
