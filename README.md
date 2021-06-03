@@ -1,16 +1,25 @@
 # Recipes Library
 
-Library for Evoila5 recipes
+![Repo Card](repo_card.png)
 
-## Before starting
+## Table of content
 
-Create file `/web-app/.env` based on `/web-app/.env.template` and (put machine local ip in variable).
+[Initial Setup](#Initial-Setup)
+
+[Starting the app](#Starting-the-app)
+
+- [Dev](#Dev)
+- [Prod](#Prod)
+
+## Initial Setup
+
+Create file `/web-app/.env` based on `/web-app/.env.template` and put machine local ip in variable.
 
 Create both `docker-compose.yml` file based on their respective templates, one at root (prod) and one at `/API` (for dev).
 
-In these docker-compose files, for the api service, change the `WEB_APP_ADDR` environment variable and the volume path.
+In these docker-compose files, for the api service, change the `WEB_APP_ADDR` environment variable and the volume path to fit your system.
 
-## Start the app
+## Starting the app
 
 ### Dev
 
