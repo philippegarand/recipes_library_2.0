@@ -20,6 +20,8 @@ namespace API.Controllers
     {
         private readonly RecipesContext _context;
 
+        private readonly int _perPage = 20;
+
         public RecipesController(RecipesContext context)
         {
             _context = context;
@@ -85,12 +87,14 @@ namespace API.Controllers
                     PictureData = PictureHelper.GetDataFromPicture(r.ID),
                 });
 
-                var res = await PaginatedListHelper<ThumbnailView>.CreateAsync(items, query.Page, query.PerPage);
+                var res = await PaginatedListHelper<ThumbnailView>.CreateAsync(items, query.Page, _perPage);
 
                 // tried to do async, but ForEach is not compatible...
                 //res.ForEach(async r => r.PictureData = await PictureHelper.GetDataFromPicture(r.Id));
 
-                return Ok(new ThumbnailsView { Page = res.Page, TotalPages = res.TotalPages, Thumbnails = res });
+                var tags = _context.Tags.Where(t => query.TagsIds.Contains(t.ID)).Select(t => new TagView { ID = t.ID, Text = t.Text }).ToList();
+
+                return Ok(new ThumbnailsView { Page = res.Page, TotalPages = res.TotalPages, Thumbnails = res, Tags = tags });
             }
             catch (Exception e)
             {

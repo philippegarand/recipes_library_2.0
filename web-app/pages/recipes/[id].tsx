@@ -38,12 +38,14 @@ import {
   SEVERITY_ENUM,
 } from '../../Utils/enums';
 import { useFormik } from 'formik';
-
-import styles from '../../styles/Recipe.module.css';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+import styles from '../../styles/Recipe.module.css';
+
+export const getServerSideProps: GetServerSideProps = async (context: {
+  query: { id: number };
+}) => {
   const { id } = context.query;
   const res = await GetRecipe(id[0]);
 

@@ -46,11 +46,11 @@ export interface IRecipe {
 }
 
 export interface IRecipesQuery {
-  perPage: number;
+  //perPage: number;
   page: number;
   tagsIds: number[];
   nameLike: string;
-  //filterBy: string;
+  filterBy: string;
 }
 
 export interface IRecipeChanges {
@@ -78,4 +78,5 @@ export interface IQueryRes {
   page: number;
   totalPages: number;
   thumbnails: IRecipeThumnail[];
+  tags: ITag[];
 }

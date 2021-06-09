@@ -15,23 +15,41 @@ import {
 } from '../Utils/enums';
 import { useRouter } from 'next/router';
 import { GetRecipesQuery } from '../api/calls';
-import { IQueryRes, IRecipeThumnail } from '../Utils/types';
+import { IQueryRes, IRecipesQuery, IRecipeThumnail } from '../Utils/types';
 
 import styles from '../styles/Library.module.css';
 
-export const getServerSideProps: GetServerSideProps = async (
-  context,
-) => {
-  const res = await GetRecipesQuery({
-    perPage: 20,
-    page: 1,
-    tagsIds: [],
-    nameLike: '',
-  });
+export const getServerSideProps: GetServerSideProps = async (context: {
+  query: { tags: string; page: number; filterBy: FILTER_BY_ENUM; nameLike: string };
+}) => {
+  const { tags, page, filterBy, nameLike } = context.query;
+
+  // /library?page=2
+  //         &filterBy=rating
+  //         &nameLike=pizza
+  //         &tags=[1,2,3]
+
+  const tagsArray = tags
+    ? tags
+        ?.substring(1, tags.length - 1)
+        ?.split(',')
+        ?.map((x) => Number(x))
+    : null;
+
+  const query = {
+    //perPage: 20,
+    page: page ?? 1,
+    tagsIds: tagsArray ?? [],
+    filterBy: filterBy ?? '',
+    nameLike: nameLike ?? '',
+  };
+  const res = await GetRecipesQuery(query);
 
   return {
     props: {
       initialRecipes: res.success ? res.data : [],
+      query,
+      loadQueryParams: true,
       error: !res.success && res?.error ? res.error : '',
     },
   };
@@ -39,12 +57,12 @@ export const getServerSideProps: GetServerSideProps = async (
 
 export default function library(props: {
   initialRecipes: IQueryRes;
+  query: IRecipesQuery;
+  loadQueryParams: Boolean;
   error: string;
 }) {
   const dispatch = useDispatch();
-  const { filterBy, selectedTags } = useSelector(
-    (state: IStoreState) => state,
-  );
+  const { filterBy, selectedTags } = useSelector((state: IStoreState) => state);
   const isMobile = useMediaQuery(600);
   const router = useRouter();
 
@@ -59,26 +77,45 @@ export default function library(props: {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInitialQuery, setIsInitialQuery] = useState<boolean>(true);
-  const [gotNewThumbnails, setGotNewThumbnails] = useState<boolean>(
-    true,
+  const [gotNewThumbnails, setGotNewThumbnails] = useState<boolean>(true);
+
+  const [shouldLoadQueryParams, setShouldLoadQueryParams] = useState(
+    props.loadQueryParams,
   );
+
+  useEffect(() => {
+    if (shouldLoadQueryParams) {
+      if (props.initialRecipes.tags.length) {
+        dispatch({
+          type: ACTION_ENUM.SEARCH_BY_TAGS,
+          selectedTags: props.initialRecipes.tags,
+        });
+
+        // push to url
+        router.push({
+          pathname: '/library',
+          query: {
+            tags: `[${props.initialRecipes.tags.map((x) => x.id).join(',')}]`,
+          },
+        });
+      }
+    }
+    setShouldLoadQueryParams(false);
+  }, []);
 
   useEffect(() => {
     const getRecipesThumbnails = async () => {
       setIsLoading(true);
 
-      const tagsIds = selectedTags
-        .filter((t) => t.id !== -1)
-        .map((t) => t.id);
+      const tagsIds = selectedTags.filter((t) => t.id !== -1).map((t) => t.id);
 
-      const nameLike =
-        selectedTags.find((t) => t.id === -1)?.text || '';
+      const nameLike = selectedTags.find((t) => t.id === -1)?.text || '';
 
       const res = await GetRecipesQuery({
-        perPage,
         page,
         tagsIds,
         nameLike,
+        filterBy,
       });
 
       setRecipes(res.data.thumbnails);
@@ -113,11 +150,7 @@ export default function library(props: {
         break;
       case FILTER_BY_ENUM.FAVORITE:
         newOrder.sort((a, b) =>
-          a.favorite < b.favorite
-            ? 1
-            : b.favorite < a.favorite
-            ? -1
-            : 0,
+          a.favorite < b.favorite ? 1 : b.favorite < a.favorite ? -1 : 0,
         );
         break;
       case FILTER_BY_ENUM.RATING:
@@ -130,18 +163,14 @@ export default function library(props: {
           Object.values(RECIPE_LENGHT_ENUM).indexOf(a.timeToMake) >
           Object.values(RECIPE_LENGHT_ENUM).indexOf(b.timeToMake)
             ? 1
-            : Object.values(RECIPE_LENGHT_ENUM).indexOf(
-                b.timeToMake,
-              ) >
+            : Object.values(RECIPE_LENGHT_ENUM).indexOf(b.timeToMake) >
               Object.values(RECIPE_LENGHT_ENUM).indexOf(a.timeToMake)
             ? -1
             : 0,
         );
         break;
       default:
-        newOrder.sort((a, b) =>
-          a.id > b.id ? 1 : b.id > a.id ? -1 : 0,
-        );
+        newOrder.sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0));
         break;
     }
 

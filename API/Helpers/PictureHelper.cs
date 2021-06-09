@@ -15,8 +15,17 @@ namespace API.Helpers
 
         public static string GetDataFromPicture(int recipeId)
         {
-            var data = System.IO.File.ReadAllBytes($"{Environment.GetEnvironmentVariable("PICTURES_SOURCE")}/recipe_{recipeId}.jpg");
-            return Convert.ToBase64String(data);
+            try
+            {
+                var data = System.IO.File.ReadAllBytes($"{Environment.GetEnvironmentVariable("PICTURES_SOURCE")}/recipe_{recipeId}.jpg");
+                return Convert.ToBase64String(data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return "";
         }
     }
 }
