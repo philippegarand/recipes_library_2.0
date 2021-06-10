@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Helpers
@@ -15,8 +13,15 @@ namespace API.Helpers
 
         public static string GetDataFromPicture(int recipeId)
         {
-            var data = System.IO.File.ReadAllBytes($"{Environment.GetEnvironmentVariable("PICTURES_SOURCE")}/recipe_{recipeId}.jpg");
-            return Convert.ToBase64String(data);
+            try
+            {
+                var data = System.IO.File.ReadAllBytes($"{Environment.GetEnvironmentVariable("PICTURES_SOURCE")}/recipe_{recipeId}.jpg");
+                return Convert.ToBase64String(data);
+            }
+            catch
+            {
+                return "";
+            }            
         }
     }
 }

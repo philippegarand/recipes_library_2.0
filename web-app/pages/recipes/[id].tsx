@@ -38,10 +38,10 @@ import {
   SEVERITY_ENUM,
 } from '../../Utils/enums';
 import { useFormik } from 'formik';
-
-import styles from '../../styles/Recipe.module.css';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+
+import styles from '../../styles/Recipe.module.css';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -181,7 +181,11 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
   });
 
   const handleShare = () => {
-    //console.log("Share");
+    dispatch({
+      type: ACTION_ENUM.SNACKBAR,
+      severity: SEVERITY_ENUM.INFO,
+      message: 'Fonctionnalité pas encore implémentée',
+    });
   };
 
   const handleEditSave = () => {
@@ -269,9 +273,14 @@ export default function Recipe(props: { recipe: IRecipe; bgImg: string }) {
               <div className={styles.imageContainer}>
                 <img
                   className={styles.img}
-                  src={`data:image/PNG;base64,${recipe.pictureData}`}
+                  src={
+                    recipe.pictureData !== ''
+                      ? `data:image/PNG;base64,${recipe.pictureData}`
+                      : '/images/NotFound.jpg'
+                  }
                   alt="Recipe Img"
                 />
+
                 <div className={styles.likeIcon}>
                   <Icon
                     icon={favorite ? 'FavoriteIcon' : 'FavoriteBorderIcon'}

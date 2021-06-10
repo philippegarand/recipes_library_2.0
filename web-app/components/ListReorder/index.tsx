@@ -1,11 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import ListCard from './ListCard';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Icon from '../Icon';
 
 import styles from './ListReorder.module.css';
@@ -55,9 +51,7 @@ export default function ListReorder(props: IProps) {
   const onDragEnd = (result: any) => {
     if (!result.destination) return;
 
-    onChange(
-      reorder(items, result.source.index, result.destination.index),
-    );
+    onChange(reorder(items, result.source.index, result.destination.index));
   };
 
   return (
@@ -94,9 +88,7 @@ export default function ListReorder(props: IProps) {
                       text={item.text}
                       index={index + 1}
                       onRemove={() => handleRemove(index)}
-                      onChange={(newVal) =>
-                        handleItemChange(index, newVal)
-                      }
+                      onChange={(newVal) => handleItemChange(index, newVal)}
                       error={Boolean(errors ? errors[index] : false)}
                       helperText={errors ? errors[index] : ''}
                     />

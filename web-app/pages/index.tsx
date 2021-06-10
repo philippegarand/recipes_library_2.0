@@ -55,11 +55,7 @@ export default function Home() {
         </Button>
         {!isSmall && (
           <div>
-            <Typography
-              className={styles.or}
-              variant="body2"
-              align="center"
-            >
+            <Typography className={styles.or} variant="body2" align="center">
               — ou —
             </Typography>
             <Button
@@ -73,9 +69,7 @@ export default function Home() {
           </div>
         )}
         <div className={styles.madeBy}>
-          <Typography variant="caption">
-            Fait par Philippe Garand
-          </Typography>
+          <Typography variant="caption">Fait par Philippe Garand</Typography>
         </div>
       </div>
     </>

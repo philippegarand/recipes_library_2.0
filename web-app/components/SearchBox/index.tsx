@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Chip, TextField, InputAdornment } from '@material-ui/core';
-import Autocomplete, {
-  createFilterOptions,
-} from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import { Icon } from '..';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { ACTION_ENUM, IStoreState } from '../../Utils/Store';
@@ -53,10 +51,7 @@ export default function SearchBox() {
     setCanSearchByName(!selectedTags.some((t) => t.id === -1));
   }, [selectedTags]);
 
-  const handleTagsChanged = (
-    event: React.ChangeEvent<{}>,
-    values: [],
-  ) => {
+  const handleTagsChanged = (event: React.ChangeEvent<{}>, values: []) => {
     dispatch({
       type: ACTION_ENUM.SEARCH_BY_TAGS,
       selectedTags: values,
@@ -98,11 +93,7 @@ export default function SearchBox() {
       onChange={handleTagsChanged}
       renderTags={(value, getTagProps) =>
         value.map((option, index) => (
-          <CustomChip
-            key={index}
-            label={option.text}
-            {...getTagProps({ index })}
-          />
+          <CustomChip key={index} label={option.text} {...getTagProps({ index })} />
         ))
       }
       renderInput={(params) => (

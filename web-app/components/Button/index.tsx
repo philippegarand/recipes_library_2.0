@@ -10,10 +10,7 @@ interface IProps extends ButtonProps {
 export default function CustomButton(props: IProps) {
   const { color, variant, endIcon } = props;
 
-  let textColor =
-    variant === 'outlined' || variant === 'text'
-      ? 'primary'
-      : 'white';
+  let textColor = variant === 'outlined' || variant === 'text' ? 'primary' : 'white';
 
   const btnEndIcon = endIcon && <Icon icon={endIcon} />;
 

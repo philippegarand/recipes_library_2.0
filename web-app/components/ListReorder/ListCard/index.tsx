@@ -34,9 +34,7 @@ export default function ListCard(props: IProps) {
     onRemove();
   };
 
-  const handleTextChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.currentTarget.value);
   };
 

@@ -37,22 +37,13 @@ export default function EditLength(props: IProps) {
       onChange={handleChange}
       size={size}
     >
-      <StyledToggleButton
-        value={RECIPE_LENGHT_ENUM.SHORT}
-        aria-label="rapide"
-      >
+      <StyledToggleButton value={RECIPE_LENGHT_ENUM.SHORT} aria-label="rapide">
         Rapide
       </StyledToggleButton>
-      <StyledToggleButton
-        value={RECIPE_LENGHT_ENUM.AVERAGE}
-        aria-label="moyenne"
-      >
+      <StyledToggleButton value={RECIPE_LENGHT_ENUM.AVERAGE} aria-label="moyenne">
         Moyenne
       </StyledToggleButton>
-      <StyledToggleButton
-        value={RECIPE_LENGHT_ENUM.LONG}
-        aria-label="longue"
-      >
+      <StyledToggleButton value={RECIPE_LENGHT_ENUM.LONG} aria-label="longue">
         Longue
       </StyledToggleButton>
     </ToggleButtonGroup>

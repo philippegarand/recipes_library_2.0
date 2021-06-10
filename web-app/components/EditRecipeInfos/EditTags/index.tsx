@@ -60,8 +60,7 @@ export default function EditTags(props: IProps) {
         dispatch({
           type: ACTION_ENUM.SNACKBAR,
           severity: SEVERITY_ENUM.ERROR,
-          message:
-            'Une erreur est survenue, la catégorie existe peut-être déjà...',
+          message: 'Une erreur est survenue, la catégorie existe peut-être déjà...',
         });
         return;
       }
@@ -87,9 +86,7 @@ export default function EditTags(props: IProps) {
       value={formik.values.tags}
       handleHomeEndKeys
       options={tagOptions}
-      getOptionSelected={(option: ITag, value: ITag) =>
-        option.id === value.id
-      }
+      getOptionSelected={(option: ITag, value: ITag) => option.id === value.id}
       getOptionLabel={(option: IAddableTag) => {
         if (typeof option === 'string') {
           return option;
@@ -113,11 +110,7 @@ export default function EditTags(props: IProps) {
       onChange={handleTagsChanged}
       renderTags={(values, getTagProps) =>
         values.map((option: ITag, index) => (
-          <CustomChip
-            key={index}
-            label={option.text}
-            {...getTagProps({ index })}
-          />
+          <CustomChip key={index} label={option.text} {...getTagProps({ index })} />
         ))
       }
       renderInput={(params) => (

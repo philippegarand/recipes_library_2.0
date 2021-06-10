@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from '@material-ui/core';
+import { FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import React from 'react';
 import { FOR_HOW_MANY_ENUM } from '../../../Utils/enums';
 
@@ -17,12 +12,7 @@ export default function EditForHowMany(props: IProps) {
   const { value, handleChange, style } = props;
   return (
     <FormControl component="fieldset" style={style}>
-      <RadioGroup
-        name="forHowMany"
-        value={value}
-        onChange={handleChange}
-        row
-      >
+      <RadioGroup name="forHowMany" value={value} onChange={handleChange} row>
         <FormControlLabel
           value={FOR_HOW_MANY_ENUM.TWO_THREE}
           control={<Radio color="primary" />}

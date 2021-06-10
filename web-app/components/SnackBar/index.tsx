@@ -9,20 +9,13 @@ function Alert(props: AlertProps) {
 }
 
 export default function SnackBar() {
-  const {
-    snackbarOpen,
-    snackbarMessage,
-    snackbarSeverity,
-    snackbarDuration,
-  } = useSelector((state: IStoreState) => state.snackbar);
+  const { snackbarOpen, snackbarMessage, snackbarSeverity, snackbarDuration } =
+    useSelector((state: IStoreState) => state.snackbar);
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (
-      snackbarOpen ||
-      Boolean(snackbarMessage || snackbarSeverity)
-    ) {
+    if (snackbarOpen || Boolean(snackbarMessage || snackbarSeverity)) {
       setOpen(true);
     }
   }, [snackbarOpen, snackbarMessage, snackbarSeverity]);
@@ -38,10 +31,7 @@ export default function SnackBar() {
       autoHideDuration={snackbarDuration || 4000}
       onClose={handleClose}
     >
-      <Alert
-        onClose={() => setOpen(false)}
-        severity={snackbarSeverity}
-      >
+      <Alert onClose={() => setOpen(false)} severity={snackbarSeverity}>
         {snackbarMessage}
       </Alert>
     </Snackbar>

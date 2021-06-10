@@ -83,10 +83,6 @@ export default function Icon(props: IProps) {
 
   return (
     // @ts-ignore
-    <Icon
-      {...otherProps}
-      className={className}
-      style={{ fill: customColor }}
-    />
+    <Icon {...otherProps} className={className} style={{ fill: customColor }} />
   );
 }

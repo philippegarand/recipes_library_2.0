@@ -19,16 +19,8 @@ interface IProps {
 }
 
 export default function RecipeCard(props: IProps) {
-  const {
-    id,
-    title,
-    timeToMake,
-    rating,
-    favorite,
-    tags,
-    type,
-    pictureData,
-  } = props.recipe;
+  const { id, title, timeToMake, rating, favorite, tags, type, pictureData } =
+    props.recipe;
 
   const router = useRouter();
 
@@ -37,32 +29,19 @@ export default function RecipeCard(props: IProps) {
 
   return (
     <Card
-      className={
-        type === RECIPE_TYPE_ENUM.OLD
-          ? styles.cardOld
-          : styles.cardNew
-      }
+      className={type === RECIPE_TYPE_ENUM.OLD ? styles.cardOld : styles.cardNew}
       onClick={() => router.push(`${ROUTES.RECIPE}/${id}`)}
     >
       <div
         className={
-          type === RECIPE_TYPE_ENUM.OLD
-            ? styles.divIconImgOld
-            : styles.divIconImgNew
+          type === RECIPE_TYPE_ENUM.OLD ? styles.divIconImgOld : styles.divIconImgNew
         }
       >
         <div className={styles.icons}>
-          <Icon
-            icon="AlarmIcon"
-            customColor={clockColorMap.get(timeToMake)}
-          />
-          {favorite && (
-            <Icon icon="FavoriteIcon" customColor="#ff3d47" />
-          )}
+          <Icon icon="AlarmIcon" customColor={clockColorMap.get(timeToMake)} />
+          {favorite && <Icon icon="FavoriteIcon" customColor="#ff3d47" />}
           {vege && <Icon icon="EcoIcon" customColor="#3CC47C" />}
-          {spicy && (
-            <Icon icon="WhatshotIcon" customColor="#FF0000" />
-          )}
+          {spicy && <Icon icon="WhatshotIcon" customColor="#FF0000" />}
           <Rating
             className={styles.rating}
             value={rating / 2}
@@ -72,12 +51,12 @@ export default function RecipeCard(props: IProps) {
           />
         </div>
         <img
-          className={
-            type === RECIPE_TYPE_ENUM.OLD
-              ? styles.imgOld
-              : styles.imgNew
+          className={type === RECIPE_TYPE_ENUM.OLD ? styles.imgOld : styles.imgNew}
+          src={
+            pictureData !== ''
+              ? `data:image/PNG;base64,${pictureData}`
+              : '/images/NotFound.jpg'
           }
-          src={`data:image/jpg;base64,${pictureData}`}
           alt="Recipe Img"
         />
       </div>

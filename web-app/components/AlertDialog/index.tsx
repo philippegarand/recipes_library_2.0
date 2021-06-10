@@ -18,14 +18,7 @@ interface Iprops {
 }
 
 export default function AlertDialog(props: Iprops) {
-  const {
-    title,
-    content,
-    open,
-    handleClose,
-    yesNo,
-    handleYes,
-  } = props;
+  const { title, content, open, handleClose, yesNo, handleYes } = props;
 
   if (yesNo) {
     return (
@@ -37,18 +30,10 @@ export default function AlertDialog(props: Iprops) {
           ))}
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="text"
-            onClick={handleClose}
-            style={{ color: '#C90E0E' }}
-          >
+          <Button variant="text" onClick={handleClose} style={{ color: '#C90E0E' }}>
             Non
           </Button>
-          <Button
-            variant="text"
-            onClick={handleYes}
-            style={{ color: '#3CC47C' }}
-          >
+          <Button variant="text" onClick={handleYes} style={{ color: '#3CC47C' }}>
             Oui
           </Button>
         </DialogActions>
@@ -66,11 +51,7 @@ export default function AlertDialog(props: Iprops) {
           ))}
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="text"
-            onClick={handleClose}
-            style={{ color: '#3CC47C' }}
-          >
+          <Button variant="text" onClick={handleClose} style={{ color: '#3CC47C' }}>
             Ok
           </Button>
         </DialogActions>

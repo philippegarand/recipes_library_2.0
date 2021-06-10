@@ -10,18 +10,10 @@ interface IProps extends IconButtonProps {
 }
 
 export default function CustomIconButton(props: IProps) {
-  const {
-    icon,
-    color = 'inherit',
-    fontSize = 'default',
-    ...otherProps
-  } = props;
+  const { icon, color = 'inherit', fontSize = 'default', ...otherProps } = props;
 
   return (
-    <IconButton
-      {...otherProps}
-      style={{ color: '#fff', ...props.style }}
-    >
+    <IconButton {...otherProps} style={{ color: '#fff', ...props.style }}>
       <Icon icon={icon} fontSize={fontSize} color={color} />
     </IconButton>
   );

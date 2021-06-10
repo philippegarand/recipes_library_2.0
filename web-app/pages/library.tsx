@@ -10,7 +10,7 @@ import { Pagination } from '@material-ui/lab';
 import { FILTER_BY_ENUM, ROUTES, SEVERITY_ENUM } from '../Utils/enums';
 import { useRouter } from 'next/router';
 import { GetRecipesQuery } from '../api/calls';
-import { IQueryRes, IRecipesQuery, IRecipeThumnail } from '../Utils/types';
+import { IQueryRes, IRecipeThumnail } from '../Utils/types';
 
 import styles from '../styles/Library.module.css';
 import { arraysMatch } from '../Utils/functions';
@@ -100,17 +100,6 @@ export default function library(props: {
       getRecipesThumbnails();
     }
   }, [page, selectedTags, filterBy /*perPage*/]);
-
-  const getRecipesThumbnails = async (query: IRecipesQuery) => {
-    setIsLoading(true);
-
-    const res = await GetRecipesQuery(query);
-
-    setRecipes(res.data.thumbnails);
-    setTotalPages(res.data.totalPages);
-
-    setIsLoading(false);
-  };
 
   useEffect(() => {
     if (!props.error) return;

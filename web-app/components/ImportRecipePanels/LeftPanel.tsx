@@ -11,10 +11,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { FormikProps } from 'formik';
-import {
-  FOR_HOW_MANY_ENUM,
-  RECIPE_LENGHT_ENUM,
-} from '../../Utils/enums';
+import { FOR_HOW_MANY_ENUM, RECIPE_LENGHT_ENUM } from '../../Utils/enums';
 import { Icon } from '..';
 import EditForHowMany from '../EditRecipeInfos/EditForHowMany';
 import EditLength from '../EditRecipeInfos/EditLength';
@@ -39,9 +36,7 @@ export default function LeftPanel(props: IProps) {
     formik.setFieldValue('favorite', !formik.values.favorite);
   };
 
-  const handleRatingChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue('rating', e.target.value);
   };
 
@@ -54,15 +49,11 @@ export default function LeftPanel(props: IProps) {
     }
   };
 
-  const handleForHowManyChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleForHowManyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue('forHowMany', e.target.value);
   };
 
-  const handleCommentChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue('comments', e.target.value);
   };
 
@@ -139,10 +130,7 @@ export default function LeftPanel(props: IProps) {
     <List disablePadding>
       {steps.map((step, index) => (
         <ListItem key={index}>
-          <ListItemText
-            className={styles.listText}
-            primary={step.text}
-          />
+          <ListItemText className={styles.listText} primary={step.text} />
           <ListItemIcon className={styles.listIcon}>
             {selectionStep > step.number ? (
               <Icon icon="CheckBoxOutlinedIcon" color="primary" />
@@ -155,14 +143,8 @@ export default function LeftPanel(props: IProps) {
 
       <Divider className={styles.divider} />
 
-      <ListItem
-        className={styles.clickable}
-        onClick={handleFavoriteChange}
-      >
-        <ListItemText
-          className={styles.listText}
-          primary="Favoris :"
-        />
+      <ListItem className={styles.clickable} onClick={handleFavoriteChange}>
+        <ListItemText className={styles.listText} primary="Favoris :" />
         <ListItemIcon className={styles.listIcon}>
           {formik.values.favorite ? (
             <Icon icon="FavoriteIcon" customColor="#ff3d47" />
@@ -173,10 +155,7 @@ export default function LeftPanel(props: IProps) {
       </ListItem>
 
       <ListItem>
-        <ListItemText
-          className={styles.listTextMargin}
-          primary="Note :"
-        />
+        <ListItemText className={styles.listTextMargin} primary="Note :" />
         <FormControl>
           <Select
             labelId="select-rating-label"
@@ -202,10 +181,7 @@ export default function LeftPanel(props: IProps) {
       </ListItem>
 
       <ListItem>
-        <ListItemText
-          className={styles.listTextMargin}
-          primary="Pour :"
-        />
+        <ListItemText className={styles.listTextMargin} primary="Pour :" />
         <EditForHowMany
           value={formik.values.forHowMany}
           handleChange={handleForHowManyChange}
@@ -223,9 +199,7 @@ export default function LeftPanel(props: IProps) {
             maxLength: 250,
             style: { fontSize: 16 },
           }}
-          helperText={`${
-            250 - formik.values.comments.length
-          } restants`}
+          helperText={`${250 - formik.values.comments.length} restants`}
           onChange={handleCommentChange}
         />
       </ListItem>
