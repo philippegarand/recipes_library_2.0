@@ -7,26 +7,21 @@ import { ACTION_ENUM, IStoreState } from '../Utils/Store';
 import { Icon, Loading, RecipeCard } from '../components';
 import { Typography, Fab } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import {
-  FILTER_BY_ENUM,
-  RECIPE_LENGHT_ENUM,
-  ROUTES,
-  SEVERITY_ENUM,
-} from '../Utils/enums';
+import { FILTER_BY_ENUM, ROUTES, SEVERITY_ENUM } from '../Utils/enums';
 import { useRouter } from 'next/router';
 import { GetRecipesQuery } from '../api/calls';
-import { IQueryRes, IRecipeThumnail } from '../Utils/types';
+import { IQueryRes, IRecipesQuery, IRecipeThumnail } from '../Utils/types';
 
 import styles from '../styles/Library.module.css';
+import { arraysMatch } from '../Utils/functions';
 
-export const getServerSideProps: GetServerSideProps = async (
-  context,
-) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const res = await GetRecipesQuery({
-    perPage: 20,
+    //perPage: 20,
     page: 1,
     tagsIds: [],
     nameLike: '',
+    filterBy: FILTER_BY_ENUM.NONE,
   });
 
   return {
@@ -42,9 +37,7 @@ export default function library(props: {
   error: string;
 }) {
   const dispatch = useDispatch();
-  const { filterBy, selectedTags } = useSelector(
-    (state: IStoreState) => state,
-  );
+  const { filterBy, selectedTags } = useSelector((state: IStoreState) => state);
   const isMobile = useMediaQuery(600);
   const router = useRouter();
 
@@ -55,99 +48,69 @@ export default function library(props: {
     props.initialRecipes?.totalPages,
   );
   const [page, setPage] = useState<number>(1);
-  const perPage = 20;
+  //const perPage = 20;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInitialQuery, setIsInitialQuery] = useState<boolean>(true);
-  const [gotNewThumbnails, setGotNewThumbnails] = useState<boolean>(
-    true,
-  );
+
+  const [prevTags, setPrevTags] = useState<number[]>([]);
+  const [prevNameLike, setPrevNameLike] = useState<string>('');
+  const [prevFilter, setPrevFilter] = useState<FILTER_BY_ENUM>(FILTER_BY_ENUM.NONE);
 
   useEffect(() => {
     const getRecipesThumbnails = async () => {
       setIsLoading(true);
 
-      const tagsIds = selectedTags
-        .filter((t) => t.id !== -1)
-        .map((t) => t.id);
+      const tagsIds = selectedTags.filter((t) => t.id !== -1).map((t) => t.id);
+      const nameLike = selectedTags.find((t) => t.id === -1)?.text || '';
 
-      const nameLike =
-        selectedTags.find((t) => t.id === -1)?.text || '';
+      // Check need to reset page (something in query changed)
+      let resetPage =
+        prevFilter != filterBy ||
+        prevNameLike != nameLike ||
+        !arraysMatch(prevTags, tagsIds);
 
       const res = await GetRecipesQuery({
-        perPage,
-        page,
+        //perPage,
+        page: resetPage ? 1 : page,
         tagsIds,
         nameLike,
+        filterBy,
       });
 
       setRecipes(res.data.thumbnails);
       setTotalPages(res.data.totalPages);
       setIsLoading(false);
-      setGotNewThumbnails(true);
+
+      // Ugly thing to know if next time we need to reset page
+      if (prevFilter != filterBy) setPrevFilter(filterBy);
+      if (!arraysMatch(prevTags, tagsIds)) setPrevTags(tagsIds);
+      if (prevNameLike != nameLike) setPrevNameLike(nameLike);
+      if (resetPage) setPage(1);
     };
 
+    // Ugly thing to prevent weird spam when first loading the page
     if (
       !isInitialQuery ||
       (page !== 1 && !selectedTags.length) ||
-      selectedTags.length > 0
+      selectedTags.length > 0 ||
+      filterBy != FILTER_BY_ENUM.NONE
     ) {
       setIsInitialQuery(false);
       getRecipesThumbnails();
     }
-  }, [perPage, page, selectedTags, isInitialQuery]);
+  }, [page, selectedTags, filterBy /*perPage*/]);
 
-  useEffect(() => {
-    const newOrder = [...recipes];
+  const getRecipesThumbnails = async (query: IRecipesQuery) => {
+    setIsLoading(true);
 
-    switch (filterBy) {
-      case FILTER_BY_ENUM.ALPHA_ORDER:
-        newOrder.sort((a, b) =>
-          a.title > b.title ? 1 : b.title > a.title ? -1 : 0,
-        );
-        break;
-      case FILTER_BY_ENUM.ALPHA_INORDER:
-        newOrder.sort((a, b) =>
-          a.title < b.title ? 1 : b.title < a.title ? -1 : 0,
-        );
-        break;
-      case FILTER_BY_ENUM.FAVORITE:
-        newOrder.sort((a, b) =>
-          a.favorite < b.favorite
-            ? 1
-            : b.favorite < a.favorite
-            ? -1
-            : 0,
-        );
-        break;
-      case FILTER_BY_ENUM.RATING:
-        newOrder.sort((a, b) =>
-          a.rating < b.rating ? 1 : b.rating < a.rating ? -1 : 0,
-        );
-        break;
-      case FILTER_BY_ENUM.TIME:
-        newOrder.sort((a, b) =>
-          Object.values(RECIPE_LENGHT_ENUM).indexOf(a.timeToMake) >
-          Object.values(RECIPE_LENGHT_ENUM).indexOf(b.timeToMake)
-            ? 1
-            : Object.values(RECIPE_LENGHT_ENUM).indexOf(
-                b.timeToMake,
-              ) >
-              Object.values(RECIPE_LENGHT_ENUM).indexOf(a.timeToMake)
-            ? -1
-            : 0,
-        );
-        break;
-      default:
-        newOrder.sort((a, b) =>
-          a.id > b.id ? 1 : b.id > a.id ? -1 : 0,
-        );
-        break;
-    }
+    const res = await GetRecipesQuery(query);
 
-    setRecipes(newOrder);
-    setGotNewThumbnails(false);
-  }, [filterBy, page, gotNewThumbnails]);
+    setRecipes(res.data.thumbnails);
+    setTotalPages(res.data.totalPages);
+
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (!props.error) return;

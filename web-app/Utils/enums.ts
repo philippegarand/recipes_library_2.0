@@ -2,7 +2,7 @@ export enum FILTER_BY_ENUM {
   NONE = 'none',
   ALPHA_ORDER = 'alphabetical',
   ALPHA_INORDER = 'alphabetical reversed',
-  TIME = 'time',
+  QUICK = 'quick',
   RATING = 'rating',
   FAVORITE = 'favorite',
 }

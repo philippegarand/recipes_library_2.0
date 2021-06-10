@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   AppBar,
+  Badge,
   fade,
   ListItemIcon,
   ListItemText,
@@ -16,9 +17,10 @@ import { FILTER_BY_ENUM, ROUTES } from '../../Utils/enums';
 import SearchBox from '../SearchBox';
 import { ACTION_ENUM, IStoreState } from '../../Utils/Store';
 import { useDispatch, useSelector } from 'react-redux';
-import AlertDialog from '../AlertDialog';
 import { iconsList } from '../Icon';
 import { useRouter } from 'next/router';
+
+import styles from './Header.module.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,8 +98,8 @@ const options: {
   },
   {
     icon: 'AlarmIcon',
-    text: 'Temps',
-    filterBy: FILTER_BY_ENUM.TIME,
+    text: 'Rapide',
+    filterBy: FILTER_BY_ENUM.QUICK,
   },
   {
     icon: 'StarIcon',
@@ -116,7 +118,7 @@ export default function Header() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { editMode } = useSelector((state: IStoreState) => state);
+  const { editMode, filterBy } = useSelector((state: IStoreState) => state);
 
   const [currentPath, setCurrentPath] = useState(ROUTES.HOME);
 
@@ -167,9 +169,7 @@ export default function Header() {
   useEffect(() => {
     setCurrentPath(
       // @ts-ignore
-      router.pathname.startsWith('/recipe/')
-        ? ROUTES.RECIPE
-        : router.pathname,
+      router.pathname.startsWith('/recipe/') ? ROUTES.RECIPE : router.pathname,
     );
   }, [router.pathname]);
 
@@ -190,12 +190,7 @@ export default function Header() {
             icon="MenuBookIcon"
             onClick={() => router.push(ROUTES.HOME)}
           />
-          <Typography
-            className={classes.title}
-            color="inherit"
-            variant="h6"
-            noWrap
-          >
+          <Typography className={classes.title} color="inherit" variant="h6" noWrap>
             {AppBarNameMap.get(currentPath)}
           </Typography>
           {
@@ -205,14 +200,20 @@ export default function Header() {
                   <SearchBox />
                 </div>
                 <div style={{ marginLeft: '0.375rem' }}>
-                  <IconButton
-                    edge="end"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleFilterMenuOpen}
-                    color="inherit"
-                    icon="FilterListIcon"
-                  />
+                  <Badge
+                    color="secondary"
+                    variant="dot"
+                    invisible={filterBy === FILTER_BY_ENUM.NONE}
+                  >
+                    <Icon
+                      className={styles.filterIcon}
+                      aria-controls={menuId}
+                      aria-haspopup="true"
+                      onClick={handleFilterMenuOpen}
+                      customColor="#fff"
+                      icon="FilterListIcon"
+                    />
+                  </Badge>
                 </div>
               </>
             ) : currentPath === `${ROUTES.RECIPE}/[id]` ? (

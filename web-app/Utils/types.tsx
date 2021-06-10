@@ -1,4 +1,9 @@
-import { FOR_HOW_MANY_ENUM, RECIPE_LENGHT_ENUM, RECIPE_TYPE_ENUM } from './enums';
+import {
+  FILTER_BY_ENUM,
+  FOR_HOW_MANY_ENUM,
+  RECIPE_LENGHT_ENUM,
+  RECIPE_TYPE_ENUM,
+} from './enums';
 
 export interface ITag {
   id?: number;
@@ -46,11 +51,11 @@ export interface IRecipe {
 }
 
 export interface IRecipesQuery {
-  perPage: number;
+  //perPage: number;
   page: number;
   tagsIds: number[];
   nameLike: string;
-  //filterBy: string;
+  filterBy: FILTER_BY_ENUM;
 }
 
 export interface IRecipeChanges {

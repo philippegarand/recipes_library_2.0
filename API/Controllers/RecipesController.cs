@@ -11,6 +11,7 @@ using API.Helpers;
 using Newtonsoft.Json;
 using API.Classes.Views;
 using API.Classes.Dtos;
+using API.Classes.Enums;
 
 namespace API.Controllers
 {
@@ -20,12 +21,22 @@ namespace API.Controllers
     {
         private readonly RecipesContext _context;
 
+        private const int PerPage = 20;
+
+        private readonly Dictionary<string, FilterBy> _filterByDict = new() {
+                { "none", FilterBy.NONE },
+                { "alphabetical", FilterBy.ALPHA_ORDER },
+                { "alphabetical reversed", FilterBy.ALPHA_INORDER },
+                { "quick", FilterBy.QUICK },
+                { "rating", FilterBy.RATING },
+                { "favorite", FilterBy.FAVORITE },                
+        };
+
         public RecipesController(RecipesContext context)
         {
             _context = context;
         }
 
-        // TODO: Change to Get and use query params
         // POST: api/Recipes       
         [HttpPost]
         [Route("thumbnails")]
@@ -36,42 +47,39 @@ namespace API.Controllers
                 var recipes = from r in _context.Recipes select r;
 
                 if (!string.IsNullOrEmpty(query.NameLike))
-                    recipes = recipes.Where(r => r.Title.Contains(query.NameLike));
-
-                // TODO: Quick sort here, not order by.
-                #region [FilterBy]
-
-                //switch (query.FilterBy)
-                //{
-                //    case "alphabetical":
-                //        recipes = recipes.OrderBy(r => r.Title);
-                //        break;
-
-                //    case "alphabetical reversed":
-                //        recipes = recipes.OrderByDescending(r => r.Title);
-                //        break;
-
-                //    case "time":
-                //        var preferences = new List<string> { "Court", "Moyen", "Long" };
-                //        recipes = recipes.OrderBy(r => preferences.IndexOf(r.TimeToMake));
-                //        break;
-
-                //    case "rating":
-                //        recipes = recipes.OrderByDescending(r => r.Rating);
-                //        break;
-
-                //    case "favorite":
-                //        recipes = recipes.OrderByDescending(r => r.Favorite);
-                //        break;
-
-                //    default:
-                //        break;
-                //}
-
-                #endregion [FilterBy]
+                    recipes = recipes.Where(r => r.Title.Contains(query.NameLike));                
 
                 if (query.TagsIds.Count > 0)
                     recipes = recipes.Where(r => r.Tags.Where(t => query.TagsIds.Contains(t.ID)).Distinct().Count() == query.TagsIds.Distinct().Count());
+
+                if (_filterByDict.TryGetValue(query.FilterBy, out FilterBy filterType))
+                {
+                    switch (filterType)
+                    {
+                        case FilterBy.ALPHA_ORDER:
+                            recipes = recipes.OrderBy(r => r.Title);
+                            break;
+
+                        case FilterBy.ALPHA_INORDER:
+                            recipes = recipes.OrderByDescending(r => r.Title);
+                            break;
+
+                        case FilterBy.QUICK:
+                            recipes = recipes.Where(r => r.TimeToMake == "Court");
+                            break;
+
+                        case FilterBy.RATING:
+                            recipes = recipes.OrderByDescending(r => r.Rating);
+                            break;
+
+                        case FilterBy.FAVORITE:
+                            recipes = recipes.Where(r => r.Favorite == true);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
 
                 var items = recipes.AsNoTracking().Select(r => new ThumbnailView
                 {
@@ -85,7 +93,7 @@ namespace API.Controllers
                     PictureData = PictureHelper.GetDataFromPicture(r.ID),
                 });
 
-                var res = await PaginatedListHelper<ThumbnailView>.CreateAsync(items, query.Page, query.PerPage);
+                var res = await PaginatedListHelper<ThumbnailView>.CreateAsync(items, query.Page, PerPage);
 
                 // tried to do async, but ForEach is not compatible...
                 //res.ForEach(async r => r.PictureData = await PictureHelper.GetDataFromPicture(r.Id));

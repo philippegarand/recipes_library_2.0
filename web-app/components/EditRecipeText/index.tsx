@@ -83,6 +83,9 @@ export default function EditRecipeText(props: IProps) {
       } else if (ingredients[index].text.indexOf('%') > -1) {
         errors.ingredients[index] =
           "Présence de '%', c'est probablement une fraction";
+      } else if (ingredients[index].text.indexOf('"') > -1) {
+        errors.ingredients[index] =
+          'Présence d\'un caractère interdit : " (double quote)';
       }
     }
 
@@ -92,6 +95,9 @@ export default function EditRecipeText(props: IProps) {
       } else if (homeIngredients[index].text.indexOf('%') > -1) {
         errors.homeIngredients[index] =
           "Présence de '%', c'est probablement une fraction";
+      } else if (homeIngredients[index].text.indexOf('"') > -1) {
+        errors.homeIngredients[index] =
+          'Présence d\'un caractère interdit : " (double quote)';
       }
     }
 
@@ -102,6 +108,8 @@ export default function EditRecipeText(props: IProps) {
         errors.steps[index] = 'Ne doit pas être numérotée, mais simplement en ordre';
       } else if (steps[index].text.indexOf('%') > -1) {
         errors.steps[index] = "Présence de '%', c'est probablement une fraction";
+      } else if (steps[index].text.indexOf('"') > -1) {
+        errors.steps[index] = 'Présence d\'un caractère interdit : " (double quote)';
       }
     }
 
