@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogActions,
@@ -63,6 +63,12 @@ export default function EditRecipeText(props: IProps) {
 
   const dispatch = useDispatch();
 
+  const [ignoreIngredientsWarnings, setIgnoreIngredientsWarnings] =
+    useState<boolean>(false);
+  const [ignoreHomeIngredientsWarnings, setIgnoreHomeIngredientsWarnings] =
+    useState<boolean>(false);
+  const [ignoreStepsWarnings, setIgnoreStepsWarnings] = useState<boolean>(false);
+
   const validate = (values: FormValue) => {
     const { title, ingredients, homeIngredients, steps } = values;
 
@@ -80,7 +86,10 @@ export default function EditRecipeText(props: IProps) {
     for (let index = 0; index < ingredients.length; index++) {
       if (!ingredients[index].text) {
         errors.ingredients[index] = 'Ne peut pas être vide';
-      } else if (ingredients[index].text.indexOf('%') > -1) {
+      } else if (
+        !ignoreIngredientsWarnings &&
+        ingredients[index].text.indexOf('%') > -1
+      ) {
         errors.ingredients[index] =
           "Présence de '%', c'est probablement une fraction";
       } else if (ingredients[index].text.indexOf('"') > -1) {
@@ -92,7 +101,10 @@ export default function EditRecipeText(props: IProps) {
     for (let index = 0; index < homeIngredients.length; index++) {
       if (!homeIngredients[index].text) {
         errors.homeIngredients[index] = 'Ne peut pas être vide';
-      } else if (homeIngredients[index].text.indexOf('%') > -1) {
+      } else if (
+        !ignoreHomeIngredientsWarnings &&
+        homeIngredients[index].text.indexOf('%') > -1
+      ) {
         errors.homeIngredients[index] =
           "Présence de '%', c'est probablement une fraction";
       } else if (homeIngredients[index].text.indexOf('"') > -1) {
@@ -106,7 +118,7 @@ export default function EditRecipeText(props: IProps) {
         errors.steps[index] = 'Ne peut pas être vide';
       } else if (/^\d/.test(steps[index].text)) {
         errors.steps[index] = 'Ne doit pas être numérotée, mais simplement en ordre';
-      } else if (steps[index].text.indexOf('%') > -1) {
+      } else if (!ignoreStepsWarnings && steps[index].text.indexOf('%') > -1) {
         errors.steps[index] = "Présence de '%', c'est probablement une fraction";
       } else if (steps[index].text.indexOf('"') > -1) {
         errors.steps[index] = 'Présence d\'un caractère interdit : " (double quote)';
@@ -218,6 +230,8 @@ export default function EditRecipeText(props: IProps) {
             items={formik.values.ingredients}
             onChange={handleOnChangeIngredients}
             errors={formik.errors['ingredients'] as string[]}
+            ignoreWarnings={ignoreIngredientsWarnings}
+            setIgnoreState={setIgnoreIngredientsWarnings}
           />
           <ListReorder
             className={styles.homeIngredients}
@@ -225,6 +239,8 @@ export default function EditRecipeText(props: IProps) {
             items={formik.values.homeIngredients}
             onChange={handleOnChangeHomeIngredients}
             errors={formik.errors['homeIngredients'] as string[]}
+            ignoreWarnings={ignoreHomeIngredientsWarnings}
+            setIgnoreState={setIgnoreHomeIngredientsWarnings}
           />
           <ListReorder
             className={styles.steps}
@@ -232,6 +248,8 @@ export default function EditRecipeText(props: IProps) {
             items={formik.values.steps}
             onChange={handleOnChangeSteps}
             errors={formik.errors['steps'] as string[]}
+            ignoreWarnings={ignoreStepsWarnings}
+            setIgnoreState={setIgnoreStepsWarnings}
           />
         </div>
       </DialogContent>

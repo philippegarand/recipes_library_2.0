@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Typography } from '@material-ui/core';
 import ListCard from './ListCard';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Icon from '../Icon';
@@ -27,10 +27,20 @@ interface IProps {
   items: { id?: number; text: string }[];
   onChange: ([]) => void;
   errors: string[];
+  ignoreWarnings: boolean;
+  setIgnoreState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ListReorder(props: IProps) {
-  const { className, title, items, onChange, errors } = props;
+  const {
+    className,
+    title,
+    items,
+    onChange,
+    errors,
+    ignoreWarnings,
+    setIgnoreState,
+  } = props;
 
   const handleAdd = () => {
     onChange([...items, { text: '' }]);
@@ -63,6 +73,20 @@ export default function ListReorder(props: IProps) {
           icon="AddBoxIcon"
           color="primary"
           onClick={handleAdd}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={ignoreWarnings}
+              onChange={(e) => setIgnoreState(e.target.checked)}
+            />
+          }
+          label={
+            <Typography variant="caption" color="textSecondary">
+              Ignorer '%' warnings
+            </Typography>
+          }
+          labelPlacement="start"
         />
       </div>
 
