@@ -1,5 +1,3 @@
-using API.Helpers;
-using API.Helpers.Interfaces;
 using EFDataAccessLibrary.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,29 +26,15 @@ namespace API
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IS_DOCKER")))
             {
                 mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
-
-                services.AddSingleton<IBackupHelper, BackupHelper>(op =>
-                {
-                    return new BackupHelper(string.Empty, string.Empty);
-                });
             }
             else
             {
-                var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-                var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
-
                 mySqlConnectionStr = $"" +
                 $"Server={Environment.GetEnvironmentVariable("DB_ADDR")}; " +
                 $"Port={Environment.GetEnvironmentVariable("DB_PORT")}; " +
-                $"Database={dbName}; " +
+                $"Database={Environment.GetEnvironmentVariable("DB_NAME")}; " +
                 $"Uid={Environment.GetEnvironmentVariable("DB_USER")}; " +
-                $"Pwd={dbPass};";
-
-                // https://www.thecodebuzz.com/initialize-instances-within-configservices-in-startup/
-                services.AddSingleton<IBackupHelper, BackupHelper>(op =>
-                {
-                    return new BackupHelper(dbName, dbPass);
-                });
+                $"Pwd={Environment.GetEnvironmentVariable("DB_PASS")};";
             }
 
             services.AddDbContext<RecipesContext>(options =>
