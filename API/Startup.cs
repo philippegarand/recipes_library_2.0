@@ -45,7 +45,7 @@ namespace API
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi", builder => 
-                    builder.WithOrigins(Environment.GetEnvironmentVariable("WEB_APP_ADDR"))
+                    builder.WithOrigins(Environment.GetEnvironmentVariable("WEB_APP_ADDR") ?? "localhost")
                            .AllowAnyHeader()
                            .AllowAnyMethod());
             });
