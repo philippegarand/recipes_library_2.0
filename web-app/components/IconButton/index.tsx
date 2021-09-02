@@ -6,11 +6,11 @@ import { iconsList } from '../Icon';
 
 interface IProps extends IconButtonProps {
   icon: keyof typeof iconsList;
-  fontSize?: 'inherit' | 'default' | 'small' | 'large';
+  fontSize?: 'inherit' | 'medium' | 'small' | 'large';
 }
 
 export default function CustomIconButton(props: IProps) {
-  const { icon, color = 'inherit', fontSize = 'default', ...otherProps } = props;
+  const { icon, color = 'inherit', fontSize = 'medium', ...otherProps } = props;
 
   return (
     <IconButton {...otherProps} style={{ color: '#fff', ...props.style }}>

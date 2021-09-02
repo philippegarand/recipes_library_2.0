@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Badge,
-  fade,
+  alpha,
   ListItemIcon,
   ListItemText,
   makeStyles,
@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: 'relative',
     borderRadius: '0.25rem',
-    backgroundColor: fade('#fff', 0.15),
+    backgroundColor: alpha('#fff', 0.15),
     '&:hover': {
-      backgroundColor: fade('#fff', 0.25),
+      backgroundColor: alpha('#fff', 0.25),
     },
     marginLeft: 'auto',
     width: '100%',
