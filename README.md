@@ -4,12 +4,11 @@
 
 ## Table of content
 
-[Initial Setup](#Initial-Setup)
-
-[Starting the app](#Starting-the-app)
-
-- [Dev](#Dev)
-- [Prod](#Prod)
+1. [Initial Setup](#initial-setup)
+2. [Starting the app](#starting-the-app)
+   - [Dev](#dev)
+   - [Prod](#prod)
+3. [Backup and Restore](#backup-and-restore)
 
 ## Initial Setup
 
@@ -42,3 +41,21 @@ If the compose was started in detached mode (nothing shown in cmd), stop the con
 ```
 docker-compose stop
 ```
+
+## Backup and Restore
+
+While the application is running, you can create a backup (database + pictures). Simply run the PowerShell script:
+
+```
+SqlDump.ps1
+```
+
+Specify the backup output folder, and if the application is running in dev mode or not.
+
+You can also restore the system from a backup point with the PowerShell script
+
+```
+SqlRestore.ps1
+```
+
+Specify the backup input folder, and if the application is running in dev mode or not.

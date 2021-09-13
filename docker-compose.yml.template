@@ -35,7 +35,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
       # Put local machine ip
-      WEB_APP_ADDR: http://192.168.0.xxx:3001
+      WEB_APP_ADDR: http://{local-ip}:3001
       IS_DOCKER: oui
       DB_ADDR: database
       DB_PASS: docker
@@ -56,3 +56,4 @@ services:
       - 3306:3306
     volumes:
       - ./DB/prod/data:/var/lib/mysql
+      - ./DB/backupTemp:/backup
